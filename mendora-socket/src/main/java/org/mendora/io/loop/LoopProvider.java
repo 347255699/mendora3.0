@@ -67,7 +67,7 @@ public class LoopProvider {
             int read = channel.read(readBuf);
             if (read > 0) {
                 readBuf.flip();
-                readBuf.reset();
+                readBuf.mark();
                 if (readDecoder.decode(ctx)) {
                     readBuf.compact();
                     if (!ctx.getWriteQueue().isEmpty()) {
@@ -78,6 +78,11 @@ public class LoopProvider {
                             WriteLoop.newWriteLoop(writeSelector(), writeHandler).start();
                         } else {
                             writeSelector().wakeup();
+                        }
+                    }else{
+                        if(!ctx.iskeepLive()){
+                            sk.cancel();
+                            channel.close();
                         }
                     }
                 } else {

@@ -12,8 +12,7 @@
         <module>mendora-socket</module>
     </modules>
     <properties>
-        <vertx.vertion>3.5.3</vertx.vertion>
-        <lo4j2.version>2.11.0</lo4j2.version>
+        <slf4j.version>1.7.25</slf4j.version>
     </properties>
 
     <dependencies>
@@ -27,7 +26,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <dependency>
@@ -44,15 +43,8 @@
 
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-jdk14</artifactId>
-            <version>1.7.25</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
         </dependency>
     </dependencies>
 </project>

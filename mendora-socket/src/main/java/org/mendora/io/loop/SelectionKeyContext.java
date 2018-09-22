@@ -1,10 +1,8 @@
 package org.mendora.io.loop;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -19,7 +17,4 @@ public class SelectionKeyContext {
     private ConcurrentLinkedQueue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     @Getter
     private ByteBuffer readBuf = ByteBuffer.allocate(DEFAULT_BUFFER_CAPACITY);
-    @Getter
-    @Setter
-    private SelectionKey selectionKey;
 }

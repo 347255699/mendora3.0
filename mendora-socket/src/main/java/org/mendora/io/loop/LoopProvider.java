@@ -62,9 +62,6 @@ public class LoopProvider {
 
         readHandler = sk -> {
             SelectionKeyContext ctx = (SelectionKeyContext) sk.attachment();
-            if (ctx.getSelectionKey() == null) {
-                ctx.setSelectionKey(sk);
-            }
             ByteBuffer readBuf = ctx.getReadBuf();
             SocketChannel channel = (SocketChannel) sk.channel();
             int read = channel.read(readBuf);

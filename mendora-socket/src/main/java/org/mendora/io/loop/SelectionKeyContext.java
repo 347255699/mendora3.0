@@ -18,12 +18,26 @@ public class SelectionKeyContext {
     @Getter
     private ByteBuffer readBuf = ByteBuffer.allocate(DEFAULT_BUFFER_CAPACITY);
     private int channelStatus = 0;
+    private volatile Object attachment = null;
 
     public void close() {
         channelStatus = -1;
     }
 
-    public boolean keepLive() {
+    public boolean iskeepLive() {
         return channelStatus == 0;
     }
+
+    public void write(ByteBuffer buf) {
+        writeQueue.add(buf);
+    }
+
+    public final Object attachment() {
+        return attachment;
+    }
+
+    public final void setAttachment(Object attachment) {
+        this.attachment = attachment;
+    }
+
 }

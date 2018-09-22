@@ -107,7 +107,7 @@ public class LoopProvider {
             if (queue.isEmpty()) {
                 // 取消写注册
                 sk.interestOps(sk.interestOps() & ~SelectionKey.OP_WRITE);
-                if (!ctx.keepLive()) {
+                if (!ctx.iskeepLive()) {
                     sk.cancel();
                     socketChannel.close();
                 }

@@ -1,7 +1,6 @@
 package org.mendora.io;
 
 import lombok.extern.slf4j.Slf4j;
-
 import java.nio.ByteBuffer;
 
 /**
@@ -14,7 +13,15 @@ import java.nio.ByteBuffer;
 public class ApplicationMain {
     public static void main(String[] args) {
         try {
+            log.info("socket启动！");
             Reactor.newReactor(8080).open(ctx -> {
+                // if need to holding inter status
+                Object something = null;
+                ctx.setAttachment(something);
+
+                // if need to using inter status.
+                Object obj = ctx.attachment();
+
                 // use readBuf do something
                 ByteBuffer readBuf = ctx.getReadBuf();
 

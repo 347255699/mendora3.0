@@ -23,6 +23,7 @@ public class Reactor {
     private Reactor(int port) {
         try {
             ssc = ServerSocketChannel.open();
+            ssc.configureBlocking(false);
             ssc.socket().bind(new InetSocketAddress(port));
         } catch (IOException e) {
             log.error(e.getMessage(), e);

@@ -76,6 +76,8 @@ public class LoopProvider {
                         }
                         if (!writeSelector().isOpen()) {
                             WriteLoop.newWriteLoop(writeSelector(), writeHandler).start();
+                        } else {
+                            writeSelector().wakeup();
                         }
                     }
                 } else {

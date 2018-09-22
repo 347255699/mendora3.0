@@ -1,17 +1,20 @@
 package org.mendora.io.loop;
 
 
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.mendora.io.decoder.ReadDecoder;
 import org.mendora.io.handler.AcceptHandler;
 import org.mendora.io.handler.ReadHandler;
 import org.mendora.io.handler.WriteHandler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.*;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.Queue;
 
 /**
  * @author menfre
@@ -25,7 +28,7 @@ public class LoopProvider {
      * default selector number.
      */
     private static final int SELECTOR_NUM = 2;
-    private static final int DEFAULT_BUFFER_CAPACITY = 1024;
+
 
     private AcceptHandler acceptHandler;
 
@@ -33,12 +36,7 @@ public class LoopProvider {
 
     private WriteHandler writeHandler;
 
-    private static class SelectionKeyContext {
-        @Getter
-        private ConcurrentLinkedQueue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
-        @Getter
-        private ByteBuffer readBuf = ByteBuffer.allocate(DEFAULT_BUFFER_CAPACITY);
-    }
+    private ReadDecoder readDecoder;
 
     /**
      * selector array.
@@ -64,11 +62,28 @@ public class LoopProvider {
 
         readHandler = sk -> {
             SelectionKeyContext ctx = (SelectionKeyContext) sk.attachment();
+            if (ctx.getSelectionKey() == null) {
+                ctx.setSelectionKey(sk);
+            }
             ByteBuffer readBuf = ctx.getReadBuf();
             SocketChannel channel = (SocketChannel) sk.channel();
             int read = channel.read(readBuf);
             if (read > 0) {
-                // todo need a Buffer Decoder
+                readBuf.flip();
+                readBuf.reset();
+                if (readDecoder.decode(ctx)) {
+                    readBuf.compact();
+                    if (!ctx.getWriteQueue().isEmpty()) {
+                        if (sk.isValid() && !sk.isWritable()) {
+                            sk.interestOps(sk.interestOps() | SelectionKey.OP_WRITE);
+                        }
+                        if (!writeSelector().isOpen()) {
+                            WriteLoop.newWriteLoop(writeSelector(), writeHandler).start();
+                        }
+                    }
+                } else {
+                    readBuf.reset();
+                }
             }
             if (read == -1) {
                 log.warn("client channel({}) was closed!", channel.getRemoteAddress());
@@ -77,8 +92,25 @@ public class LoopProvider {
             }
         };
 
-        writeHandler = sc -> {
-
+        writeHandler = sk -> {
+            final SelectionKeyContext ctx = (SelectionKeyContext) sk.attachment();
+            final Queue<ByteBuffer> queue = ctx.getWriteQueue();
+            final SocketChannel channel = (SocketChannel) sk.channel();
+            while (!queue.isEmpty()) {
+                final ByteBuffer buf = queue.peek();
+                // switch read mode
+                buf.flip();
+                channel.write(buf);
+                if (buf.hasRemaining()) {
+                    break;
+                } else {
+                    queue.poll();
+                }
+            }
+            if (queue.isEmpty()) {
+                // 取消写注册
+                sk.interestOps(sk.interestOps() & ~SelectionKey.OP_WRITE);
+            }
         };
 
     }
@@ -114,7 +146,8 @@ public class LoopProvider {
         return selectors[1];
     }
 
-    public void execute(ServerSocketChannel serverSocketChannel) throws Exception {
+    public void execute(ServerSocketChannel serverSocketChannel, ReadDecoder readDecoder) throws Exception {
+        this.readDecoder = readDecoder;
         serverSocketChannel.register(acceptSelector(), SelectionKey.OP_ACCEPT);
         AcceptLoop.newAcceptLoop(acceptSelector(), acceptHandler).start();
     }

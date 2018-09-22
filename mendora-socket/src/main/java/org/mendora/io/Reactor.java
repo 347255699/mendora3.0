@@ -1,7 +1,7 @@
 package org.mendora.io;
 
-
 import lombok.extern.slf4j.Slf4j;
+import org.mendora.io.decoder.ReadDecoder;
 import org.mendora.io.loop.LoopProvider;
 
 import java.io.IOException;
@@ -20,7 +20,6 @@ public class Reactor {
      * server socket channel, when a connect reached using this channel accept.
      */
     private ServerSocketChannel ssc;
-
     private Reactor(int port) {
         try {
             ssc = ServerSocketChannel.open();
@@ -39,8 +38,8 @@ public class Reactor {
      *
      * @throws IOException when io operation failed throw it.
      */
-    public void open() throws Exception {
-        LoopProvider.newLoopProvider().execute(ssc);
+    public void open(ReadDecoder readDecoder) throws Exception {
+        LoopProvider.newLoopProvider().execute(ssc, readDecoder);
     }
 
 }

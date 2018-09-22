@@ -92,12 +92,12 @@ public class LoopProvider {
         writeHandler = sk -> {
             final SelectionKeyContext ctx = (SelectionKeyContext) sk.attachment();
             final Queue<ByteBuffer> queue = ctx.getWriteQueue();
-            final SocketChannel channel = (SocketChannel) sk.channel();
+            final SocketChannel socketChannel = (SocketChannel) sk.channel();
             while (!queue.isEmpty()) {
                 final ByteBuffer buf = queue.peek();
                 // switch read mode
                 buf.flip();
-                channel.write(buf);
+                socketChannel.write(buf);
                 if (buf.hasRemaining()) {
                     break;
                 } else {
@@ -107,6 +107,10 @@ public class LoopProvider {
             if (queue.isEmpty()) {
                 // 取消写注册
                 sk.interestOps(sk.interestOps() & ~SelectionKey.OP_WRITE);
+                if (!ctx.keepLive()) {
+                    sk.cancel();
+                    socketChannel.close();
+                }
             }
         };
 

@@ -17,4 +17,13 @@ public class SelectionKeyContext {
     private ConcurrentLinkedQueue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     @Getter
     private ByteBuffer readBuf = ByteBuffer.allocate(DEFAULT_BUFFER_CAPACITY);
+    private int channelStatus = 0;
+
+    public void close() {
+        channelStatus = -1;
+    }
+
+    public boolean keepLive() {
+        return channelStatus == 0;
+    }
 }

@@ -14,7 +14,7 @@ public class ApplicationMain {
     public static void main(String[] args) {
         try {
             log.info("socket启动！");
-            Reactor.newReactor(8080).open(ctx -> {
+            ServerReactor.newReactor(8080).open(ctx -> {
                 // if need to holding inter status
                 Object something = null;
                 ctx.setAttachment(something);

@@ -3,7 +3,7 @@ package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mendora.io.decoder.ReadDecoder;
-import org.mendora.io.handler.AcceptHandler;
+import org.mendora.io.handler.AcceptOrConnectHandler;
 import org.mendora.io.handler.ReadHandler;
 import org.mendora.io.handler.WriteHandler;
 
@@ -29,8 +29,7 @@ public class LoopProvider {
      */
     private static final int SELECTOR_NUM = 2;
 
-
-    private AcceptHandler acceptHandler;
+    private AcceptOrConnectHandler acceptOrConnectHandler;
 
     private ReadHandler readHandler;
 
@@ -53,7 +52,7 @@ public class LoopProvider {
             }
         }
 
-        acceptHandler = sc -> {
+        acceptOrConnectHandler = sc -> {
             sc.register(readSelector(), SelectionKey.OP_READ, new SelectionKeyContext());
             if (!readSelector().isOpen()) {
                 ReadLoop.newReadLoop(readSelector(), readHandler).start();
@@ -79,8 +78,8 @@ public class LoopProvider {
                         } else {
                             writeSelector().wakeup();
                         }
-                    }else{
-                        if(!ctx.iskeepLive()){
+                    } else {
+                        if (!ctx.iskeepLive()) {
                             sk.cancel();
                             channel.close();
                         }
@@ -137,6 +136,15 @@ public class LoopProvider {
     }
 
     /**
+     * provide selector for connect event.
+     *
+     * @return selector of connect
+     */
+    private Selector connectSelector() {
+        return selectors[0];
+    }
+
+    /**
      * provide selector for read event.
      *
      * @return selector of read
@@ -154,10 +162,15 @@ public class LoopProvider {
         return selectors[1];
     }
 
+    public void execute(SocketChannel socketChannel, ReadDecoder readDecoder) throws Exception {
+        this.readDecoder = readDecoder;
+        socketChannel.register(acceptSelector(), SelectionKey.OP_CONNECT);
+        ConnectLoop.newConnectLoop(connectSelector(), acceptOrConnectHandler).start();
+    }
+
     public void execute(ServerSocketChannel serverSocketChannel, ReadDecoder readDecoder) throws Exception {
         this.readDecoder = readDecoder;
         serverSocketChannel.register(acceptSelector(), SelectionKey.OP_ACCEPT);
-        AcceptLoop.newAcceptLoop(acceptSelector(), acceptHandler).start();
+        AcceptLoop.newAcceptLoop(acceptSelector(), acceptOrConnectHandler).start();
     }
-
 }

@@ -9,6 +9,6 @@ import java.nio.channels.SocketChannel;
  * desc:
  */
 @FunctionalInterface
-public interface AcceptHandler {
+public interface AcceptOrConnectHandler {
     void handle(SocketChannel socketChannel) throws Exception;
 }

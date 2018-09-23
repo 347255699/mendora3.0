@@ -1,7 +1,7 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.AcceptHandler;
+import org.mendora.io.handler.AcceptOrConnectHandler;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -16,14 +16,14 @@ import java.nio.channels.SocketChannel;
  */
 @Slf4j
 public class AcceptLoop extends AbstractLoop {
-    private AcceptHandler acceptHandler;
+    private AcceptOrConnectHandler acceptHandler;
 
-    private AcceptLoop(Selector selector, AcceptHandler acceptHandler) {
+    private AcceptLoop(Selector selector, AcceptOrConnectHandler acceptHandler) {
         super(selector);
         this.acceptHandler = acceptHandler;
     }
 
-    static AcceptLoop newAcceptLoop(Selector selector, AcceptHandler acceptHandler) {
+    static AcceptLoop newAcceptLoop(Selector selector, AcceptOrConnectHandler acceptHandler) {
         return new AcceptLoop(selector, acceptHandler);
     }
 

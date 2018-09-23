@@ -39,5 +39,4 @@ public class SelectionKeyContext {
     public final void setAttachment(Object attachment) {
         this.attachment = attachment;
     }
-
 }

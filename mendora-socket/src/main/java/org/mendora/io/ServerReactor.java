@@ -15,12 +15,13 @@ import java.nio.channels.ServerSocketChannel;
  * desc: reactor of socket event.
  */
 @Slf4j
-public class Reactor {
+public class ServerReactor {
     /**
      * server socket channel, when a connect reached using this channel accept.
      */
     private ServerSocketChannel ssc;
-    private Reactor(int port) {
+
+    private ServerReactor(int port) {
         try {
             ssc = ServerSocketChannel.open();
             ssc.configureBlocking(false);
@@ -30,8 +31,8 @@ public class Reactor {
         }
     }
 
-    public static Reactor newReactor(int port) {
-        return new Reactor(port);
+    public static ServerReactor newReactor(int port) {
+        return new ServerReactor(port);
     }
 
     /**
@@ -42,5 +43,4 @@ public class Reactor {
     public void open(ReadDecoder readDecoder) throws Exception {
         LoopProvider.newLoopProvider().execute(ssc, readDecoder);
     }
-
 }

@@ -1,7 +1,7 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.InterRWCAHandler;
+import org.mendora.io.handler.InterRWAHandler;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -14,14 +14,14 @@ import java.nio.channels.Selector;
  */
 @Slf4j
 public class WriteLoop extends AbstractLoop {
-    private InterRWCAHandler interWriteHandler;
+    private InterRWAHandler interWriteHandler;
 
-    private WriteLoop(Selector selector, InterRWCAHandler interWriteHandler) {
+    private WriteLoop(Selector selector, InterRWAHandler interWriteHandler) {
         super(selector);
         this.interWriteHandler = interWriteHandler;
     }
 
-    static WriteLoop newWriteLoop(Selector selector, InterRWCAHandler interWriteHandler) {
+    static WriteLoop newWriteLoop(Selector selector, InterRWAHandler interWriteHandler) {
         return new WriteLoop(selector, interWriteHandler);
     }
 

@@ -1,7 +1,7 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.InterRWCAHandler;
+import org.mendora.io.handler.InterRWAHandler;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -14,14 +14,14 @@ import java.nio.channels.Selector;
  */
 @Slf4j
 public class ReadLoop extends AbstractLoop {
-    private InterRWCAHandler interReadHandler;
+    private InterRWAHandler interReadHandler;
 
-    private ReadLoop(Selector selector, InterRWCAHandler interReadHandler) {
+    private ReadLoop(Selector selector, InterRWAHandler interReadHandler) {
         super(selector);
         this.interReadHandler = interReadHandler;
     }
 
-    static ReadLoop newReadLoop(Selector selector, InterRWCAHandler interReadHandler) {
+    static ReadLoop newReadLoop(Selector selector, InterRWAHandler interReadHandler) {
         return new ReadLoop(selector, interReadHandler);
     }
 

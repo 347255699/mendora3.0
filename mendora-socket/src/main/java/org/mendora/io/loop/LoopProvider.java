@@ -4,7 +4,7 @@ package org.mendora.io.loop;
 import lombok.extern.slf4j.Slf4j;
 import org.mendora.io.handler.ConnectOrAcceptHandler;
 import org.mendora.io.handler.ReadHandler;
-import org.mendora.io.handler.InterRWCAHandler;
+import org.mendora.io.handler.InterRWAHandler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,17 +27,15 @@ public class LoopProvider {
 
     private ReadHandler readHandler;
 
-    private ConnectOrAcceptHandler connectedHandler;
-
     private ConnectOrAcceptHandler acceptedHandler;
 
-    private InterRWCAHandler interAcceptHandler;
+    private InterRWAHandler interAcceptHandler;
 
-    private InterRWCAHandler interConnectHandler;
+    private InterRWAHandler interConnectHandler;
 
-    private InterRWCAHandler interReadHandler;
+    private InterRWAHandler interReadHandler;
 
-    private InterRWCAHandler interWriteHandler;
+    private InterRWAHandler interWriteHandler;
 
     /**
      * selector array.
@@ -102,24 +100,6 @@ public class LoopProvider {
             }
             // 外部链接接入处理器
             acceptedHandler.handle(ctx);
-            // 是否有写事件需要处理
-            hasWriteEvent(sk, ctx);
-        };
-
-        /**
-         * 内部链接成功处理器
-         * @param sk 选择键
-         */
-        interConnectHandler = sk -> {
-            final SelectionKeyContext ctx = new SelectionKeyContext();
-            final SocketChannel sc = (SocketChannel) sk.channel();
-            sc.register(readSelector(), SelectionKey.OP_READ, ctx);
-            if (!readSelector().isOpen()) {
-                // 启动可读循环器
-                ReadLoop.newReadLoop(readSelector(), interReadHandler).start();
-            }
-            // 外部链接成功处理器
-            connectedHandler.handle(ctx);
             // 是否有写事件需要处理
             hasWriteEvent(sk, ctx);
         };
@@ -228,23 +208,6 @@ public class LoopProvider {
      */
     private Selector writeSelector() {
         return selectors[2];
-    }
-
-    /**
-     * 执行循环器，用户客户端
-     *
-     * @param socketChannel    套接字通道
-     * @param connectedHandler 链接触发器
-     * @param readHandler      可读触发器
-     * @throws Exception
-     */
-    public void execute(SocketChannel socketChannel, ConnectOrAcceptHandler connectedHandler, ReadHandler readHandler) throws Exception {
-        this.connectedHandler = connectedHandler;
-        this.readHandler = readHandler;
-        // 注册链接事件
-        socketChannel.register(acceptOrConnectSelector(), SelectionKey.OP_CONNECT);
-        // 启动链接循环器
-        ConnectLoop.newConnectLoop(acceptOrConnectSelector(), interConnectHandler).start();
     }
 
     /**

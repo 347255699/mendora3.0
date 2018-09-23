@@ -9,6 +9,6 @@ import java.nio.channels.SelectionKey;
  * desc:
  */
 @FunctionalInterface
-public interface InterRWCAHandler {
+public interface InterRWAHandler {
     void handle(SelectionKey selectionKey) throws Exception;
 }

@@ -1,7 +1,7 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.ReadHandler;
+import org.mendora.io.handler.InterRWCAHandler;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -10,19 +10,19 @@ import java.nio.channels.Selector;
  * @author menfre
  * @version 1.0
  * date: 2018/9/21
- * desc:
+ * desc: 可读事件循环器
  */
 @Slf4j
 public class ReadLoop extends AbstractLoop {
-    private ReadHandler readHandler;
+    private InterRWCAHandler interReadHandler;
 
-    private ReadLoop(Selector selector, ReadHandler readHandler) {
+    private ReadLoop(Selector selector, InterRWCAHandler interReadHandler) {
         super(selector);
-        this.readHandler = readHandler;
+        this.interReadHandler = interReadHandler;
     }
 
-    static ReadLoop newReadLoop(Selector selector, ReadHandler readHandler) {
-        return new ReadLoop(selector, readHandler);
+    static ReadLoop newReadLoop(Selector selector, InterRWCAHandler interReadHandler) {
+        return new ReadLoop(selector, interReadHandler);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ReadLoop extends AbstractLoop {
     protected void handle(SelectionKey selectionKey) {
         if (selectionKey.isValid() && selectionKey.isReadable()) {
             try {
-                readHandler.handle(selectionKey);
+                interReadHandler.handle(selectionKey);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

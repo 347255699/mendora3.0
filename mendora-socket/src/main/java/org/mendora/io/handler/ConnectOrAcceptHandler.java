@@ -9,6 +9,6 @@ import org.mendora.io.loop.SelectionKeyContext;
  * desc:
  */
 @FunctionalInterface
-public interface ReadHandler {
-    boolean handle(SelectionKeyContext ctx);
+public interface ConnectOrAcceptHandler {
+    void handle(SelectionKeyContext ctx);
 }

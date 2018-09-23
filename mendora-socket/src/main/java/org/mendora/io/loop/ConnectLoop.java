@@ -1,29 +1,28 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.AcceptOrConnectHandler;
+import org.mendora.io.handler.InterRWCAHandler;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.SocketChannel;
 
 /**
  * @author menfre
  * date: 2018/9/23
  * version: 1.0
- * desc:
+ * desc: 链接建立事件循环器
  */
 @Slf4j
 public class ConnectLoop extends AbstractLoop {
-    private AcceptOrConnectHandler connectHandler;
+    private InterRWCAHandler interConnectHandler;
 
-    private ConnectLoop(Selector selector, AcceptOrConnectHandler connectHandler) {
+    private ConnectLoop(Selector selector, InterRWCAHandler interConnectHandler) {
         super(selector);
-        this.connectHandler = connectHandler;
+        this.interConnectHandler = interConnectHandler;
     }
 
-    static ConnectLoop newConnectLoop(Selector selector, AcceptOrConnectHandler connectHandler) {
-        return new ConnectLoop(selector, connectHandler);
+    static ConnectLoop newConnectLoop(Selector selector, InterRWCAHandler interConnectHandler) {
+        return new ConnectLoop(selector, interConnectHandler);
     }
 
 
@@ -35,9 +34,8 @@ public class ConnectLoop extends AbstractLoop {
     @Override
     protected void handle(SelectionKey selectionKey) {
         if (selectionKey.isValid() && selectionKey.isConnectable()) {
-            SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
             try {
-                connectHandler.handle(socketChannel);
+                interConnectHandler.handle(selectionKey);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

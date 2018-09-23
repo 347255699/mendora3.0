@@ -1,30 +1,28 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.AcceptOrConnectHandler;
+import org.mendora.io.handler.InterRWCAHandler;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
 
 /**
  * @author menfre
  * @version 1.0
  * date: 2018/9/21
- * desc:
+ * desc: 链接接入事件循环器
  */
 @Slf4j
 public class AcceptLoop extends AbstractLoop {
-    private AcceptOrConnectHandler acceptHandler;
+    private InterRWCAHandler interAcceptHandler;
 
-    private AcceptLoop(Selector selector, AcceptOrConnectHandler acceptHandler) {
+    private AcceptLoop(Selector selector, InterRWCAHandler interAcceptHandler) {
         super(selector);
-        this.acceptHandler = acceptHandler;
+        this.interAcceptHandler = interAcceptHandler;
     }
 
-    static AcceptLoop newAcceptLoop(Selector selector, AcceptOrConnectHandler acceptHandler) {
-        return new AcceptLoop(selector, acceptHandler);
+    static AcceptLoop newAcceptLoop(Selector selector, InterRWCAHandler interAcceptHandler) {
+        return new AcceptLoop(selector, interAcceptHandler);
     }
 
     @Override
@@ -40,10 +38,8 @@ public class AcceptLoop extends AbstractLoop {
     @Override
     protected void handle(SelectionKey selectionKey) {
         if (selectionKey.isValid() && selectionKey.isAcceptable()) {
-            ServerSocketChannel subServerSocketChannel = (ServerSocketChannel) selectionKey.channel();
             try {
-                SocketChannel socketChannel = subServerSocketChannel.accept();
-                acceptHandler.handle(socketChannel);
+                interAcceptHandler.handle(selectionKey);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

@@ -1,6 +1,7 @@
 package org.mendora.io;
 
 import lombok.extern.slf4j.Slf4j;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -11,28 +12,37 @@ import java.nio.ByteBuffer;
  */
 @Slf4j
 public class ApplicationMain {
+    // example
     public static void main(String[] args) {
         try {
-            log.info("socket启动！");
-            ServerReactor.newReactor(8080).open(ctx -> {
-                // if need to holding inter status
-                Object something = null;
-                ctx.setAttachment(something);
+            // 打开反应器
+            ServerReactor.newReactor(10000).open(
+                    ctx -> {
+                        // 有链接接入
+                    }
+                    , ctx -> {
+                        // 自定义反应器内部上下文
+                        Object context = null;
+                        ctx.setAttachment(context);
 
-                // if need to using inter status.
-                Object obj = ctx.attachment();
+                        // 取出上下文
+                        Object obj = ctx.attachment();
 
-                // use readBuf do something
-                ByteBuffer readBuf = ctx.getReadBuf();
+                        // 根据上下文做一些事情
 
-                // need to write something wo socket
-                ByteBuffer writeBuf = ByteBuffer.allocate(1024);
-                ctx.write(writeBuf);
+                        // 取得可读缓冲区
+                        ByteBuffer readBuf = ctx.getReadBuf();
 
-                // chose short or long socket
-                ctx.close();
-                return true;
-            });
+                        // 写出消息
+                        ByteBuffer writeBuf = ByteBuffer.allocate(1024);
+                        ctx.write(writeBuf);
+
+                        // 关闭连接(短连接)
+                        ctx.close();
+
+                        // 告诉反应器此处数据是否接收或处理成功(以此来维护粘包和断包的情况)
+                        return true;
+                    });
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

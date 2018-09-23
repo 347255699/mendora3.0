@@ -1,7 +1,7 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.WriteHandler;
+import org.mendora.io.handler.InterRWCAHandler;
 
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -10,23 +10,19 @@ import java.nio.channels.Selector;
  * @author menfre
  * @version 1.0
  * date: 2018/9/21
- * desc:
+ * desc: 可写事件循环器
  */
 @Slf4j
 public class WriteLoop extends AbstractLoop {
-    private WriteHandler writeHandler;
+    private InterRWCAHandler interWriteHandler;
 
-    public WriteLoop(Selector selector) {
+    private WriteLoop(Selector selector, InterRWCAHandler interWriteHandler) {
         super(selector);
+        this.interWriteHandler = interWriteHandler;
     }
 
-    private WriteLoop(Selector selector, WriteHandler writeHandler) {
-        super(selector);
-        this.writeHandler = writeHandler;
-    }
-
-    static WriteLoop newWriteLoop(Selector selector, WriteHandler writeHandler) {
-        return new WriteLoop(selector, writeHandler);
+    static WriteLoop newWriteLoop(Selector selector, InterRWCAHandler interWriteHandler) {
+        return new WriteLoop(selector, interWriteHandler);
     }
 
     @Override
@@ -38,7 +34,7 @@ public class WriteLoop extends AbstractLoop {
     public void handle(SelectionKey selectionKey) {
         if (selectionKey.isValid() && selectionKey.isWritable()) {
             try {
-                writeHandler.handle(selectionKey);
+                interWriteHandler.handle(selectionKey);
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

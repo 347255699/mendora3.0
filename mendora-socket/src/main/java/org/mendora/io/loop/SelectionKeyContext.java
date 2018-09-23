@@ -17,6 +17,7 @@ public class SelectionKeyContext {
     private ConcurrentLinkedQueue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
     @Getter
     private ByteBuffer readBuf = ByteBuffer.allocate(DEFAULT_BUFFER_CAPACITY);
+    // defalut keep alive
     private int channelStatus = 0;
     private volatile Object attachment = null;
 

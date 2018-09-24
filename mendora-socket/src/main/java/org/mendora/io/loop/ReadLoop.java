@@ -22,6 +22,7 @@ public class ReadLoop extends AbstractLoop {
     }
 
     static ReadLoop newReadLoop(Selector selector, InterRWAHandler interReadHandler) {
+        log.info("read loop start up!");
         return new ReadLoop(selector, interReadHandler);
     }
 

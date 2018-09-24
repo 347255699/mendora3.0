@@ -1,7 +1,7 @@
 package org.mendora.io;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.ConnectOrAcceptHandler;
+import org.mendora.io.handler.AcceptHandler;
 import org.mendora.io.handler.ReadHandler;
 import org.mendora.io.loop.LoopProvider;
 
@@ -49,7 +49,7 @@ public class ServerReactor {
      * @param readHandler     消息到达并可读时触发该处理器
      * @throws Exception
      */
-    public void open(ConnectOrAcceptHandler acceptedHandler, ReadHandler readHandler) throws Exception {
+    public void open(AcceptHandler acceptedHandler, ReadHandler readHandler) throws Exception {
         // 启动多个循环器
         LoopProvider.newLoopProvider().execute(ssc, acceptedHandler, readHandler);
     }

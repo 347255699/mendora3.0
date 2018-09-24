@@ -22,6 +22,7 @@ public class AcceptLoop extends AbstractLoop {
     }
 
     static AcceptLoop newAcceptLoop(Selector selector, InterRWAHandler interAcceptHandler) {
+        log.info("accept loop start up!");
         return new AcceptLoop(selector, interAcceptHandler);
     }
 

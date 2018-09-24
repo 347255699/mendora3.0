@@ -1,7 +1,10 @@
 package org.mendora.io.loop;
 
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -11,9 +14,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * version: 1.0
  * desc: 选择键上下文
  */
+@RequiredArgsConstructor
 public class SelectionKeyContext {
     // 默认可读缓冲区开辟大小
     private static final int DEFAULT_BUFFER_CAPACITY = 1024;
+
     /**
      * 写消息队列
      */
@@ -24,6 +29,10 @@ public class SelectionKeyContext {
      */
     @Getter
     private ByteBuffer readBuf = ByteBuffer.allocate(DEFAULT_BUFFER_CAPACITY);
+
+    @NonNull
+    @Getter
+    private InetSocketAddress remoteAddress;
 
     /**
      * 通道状态(0 : 长链接, -1 : 短连接)

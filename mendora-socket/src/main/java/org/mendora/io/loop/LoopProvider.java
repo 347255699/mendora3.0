@@ -2,11 +2,12 @@ package org.mendora.io.loop;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.handler.ConnectOrAcceptHandler;
+import org.mendora.io.handler.AcceptHandler;
 import org.mendora.io.handler.ReadHandler;
 import org.mendora.io.handler.InterRWAHandler;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.nio.channels.spi.SelectorProvider;
@@ -23,24 +24,24 @@ public class LoopProvider {
     /**
      * default selector number.
      */
-    private static final int SELECTOR_NUM = 3;
+    private static final int SELECTOR_NUM = 2;
 
     private ReadHandler readHandler;
 
-    private ConnectOrAcceptHandler acceptedHandler;
+    private AcceptHandler acceptedHandler;
 
     private InterRWAHandler interAcceptHandler;
-
-    private InterRWAHandler interConnectHandler;
 
     private InterRWAHandler interReadHandler;
 
     private InterRWAHandler interWriteHandler;
 
+    private volatile boolean isReadLoopAlive = false;
+
     /**
      * selector array.
      */
-    private Selector[] selectors = new Selector[SELECTOR_NUM];
+    private static Selector[] selectors = new Selector[SELECTOR_NUM];
 
     /**
      * 是否有写事件需要啊处理
@@ -89,14 +90,18 @@ public class LoopProvider {
          * @param sk 选择键
          */
         interAcceptHandler = sk -> {
-            final SelectionKeyContext ctx = new SelectionKeyContext();
             final ServerSocketChannel serverSocketChannel = (ServerSocketChannel) sk.channel();
             final SocketChannel sc = serverSocketChannel.accept();
+            final SelectionKeyContext ctx
+                    = new SelectionKeyContext(new InetSocketAddress(sc.socket().getInetAddress(), sc.socket().getPort()));
             sc.configureBlocking(false);
             sc.register(readSelector(), SelectionKey.OP_READ, ctx);
-            if (!readSelector().isOpen()) {
+            if (!isReadLoopAlive) {
                 // 启动可读循环器
                 ReadLoop.newReadLoop(readSelector(), interReadHandler).start();
+                isReadLoopAlive = true;
+            }else{
+                readSelector().wakeup();
             }
             // 外部链接接入处理器
             acceptedHandler.handle(ctx);
@@ -187,7 +192,7 @@ public class LoopProvider {
      *
      * @return 接入或链接选择器
      */
-    private Selector acceptOrConnectSelector() {
+    private Selector acceptSelector() {
         return selectors[0];
     }
 
@@ -207,7 +212,7 @@ public class LoopProvider {
      * @return 选择器
      */
     private Selector writeSelector() {
-        return selectors[2];
+        return selectors[1];
     }
 
     /**
@@ -218,12 +223,12 @@ public class LoopProvider {
      * @param readHandler         可读触发器
      * @throws Exception
      */
-    public void execute(ServerSocketChannel serverSocketChannel, ConnectOrAcceptHandler acceptedHandler, ReadHandler readHandler) throws Exception {
+    public void execute(ServerSocketChannel serverSocketChannel, AcceptHandler acceptedHandler, ReadHandler readHandler) throws Exception {
         this.acceptedHandler = acceptedHandler;
         this.readHandler = readHandler;
         // 注册接入事件
-        serverSocketChannel.register(acceptOrConnectSelector(), SelectionKey.OP_ACCEPT);
+        serverSocketChannel.register(acceptSelector(), SelectionKey.OP_ACCEPT);
         // 启动接入循环器
-        AcceptLoop.newAcceptLoop(acceptOrConnectSelector(), interAcceptHandler).start();
+        AcceptLoop.newAcceptLoop(acceptSelector(), interAcceptHandler).start();
     }
 }

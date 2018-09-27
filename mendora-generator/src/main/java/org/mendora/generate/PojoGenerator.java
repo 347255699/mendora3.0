@@ -22,7 +22,7 @@ import java.util.Optional;
  * desc:
  */
 @Slf4j
-public class PojoGenerator {
+class PojoGenerator {
     private static final String CONTENT_INTEGER = "int";
     private static final String CONTENT_VARCHAR = "varchar";
     private static final String CONTENT_TEXT = "text";
@@ -33,7 +33,7 @@ public class PojoGenerator {
     private PojoGenerator() {
     }
 
-    public static PojoGenerator newGenerator() {
+    static PojoGenerator newGenerator() {
         return new PojoGenerator();
     }
 
@@ -104,7 +104,10 @@ public class PojoGenerator {
         pojoBuilder.addField(fieldBuilder.build());
     }
 
-    public void generate() {
+    /**
+     * 生成
+     */
+    void generate() {
         Arrays.asList(Config.tables()).forEach(name -> {
             try {
                 String pojoName = StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(name));
@@ -125,11 +128,23 @@ public class PojoGenerator {
         });
     }
 
+    /**
+     * 添加lombok注解
+     *
+     * @param name
+     * @return
+     */
     private AnnotationSpec lombok(String name) {
         return AnnotationSpec.builder(ClassName.get(LOMBOK_PACKAGE, name))
                 .build();
     }
 
+    /**
+     * 映射类型
+     *
+     * @param type
+     * @return
+     */
     private Optional<Class<?>> parseType(String type) {
         Class<?> clazz = null;
         if (type.contains(CONTENT_INTEGER)) {

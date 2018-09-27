@@ -9,8 +9,6 @@ import org.mendora.generate.util.LombokAnnotation;
 import org.mendora.generate.util.StringUtils;
 
 import javax.lang.model.element.Modifier;
-import java.lang.invoke.MethodType;
-import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -80,14 +78,6 @@ public class PojoGenerator {
     private AnnotationSpec lombok(String name) {
         return AnnotationSpec.builder(ClassName.get(LOMBOK_PACKAGE, name))
                 .build();
-    }
-
-    public static void main(String[] args) {
-        try {
-            PojoGenerator.newGenerator().generate();
-        } catch (Exception e) {
-            log.error(e.getMessage(), e);
-        }
     }
 
     private Optional<Class<?>> parseType(String type) {

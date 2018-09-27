@@ -36,7 +36,7 @@ public class Config {
     /**
      * 配置文件路径
      */
-    private static final String CONFIG_FILE_PATH = "config.json";
+    private static final String CONFIG_FILE_PATH = "director.json";
 
     static {
         try {

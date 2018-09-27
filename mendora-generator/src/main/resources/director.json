@@ -9,5 +9,8 @@
     "platform_user"
   ],
   "targetPath": "/Users/pundix043/workbench/mendora/generator",
-  "pojoPackage":"org.mendora.generate"
+  "pojo": {
+    "packageName": "org.mendora.generate",
+    "chainMode":true
+  }
 }

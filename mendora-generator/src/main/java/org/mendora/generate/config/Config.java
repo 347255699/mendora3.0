@@ -32,7 +32,7 @@ public class Config {
     /**
      * pojo包名
      */
-    private static String POJO_PACKAGE;
+    private static PojoConfig POJO_CONFIG;
     /**
      * 配置文件路径
      */
@@ -65,7 +65,8 @@ public class Config {
             TABLES = new String[tables.size()];
             tables.toArray(TABLES);
             TARGET_PATH = config.getString("targetPath");
-            POJO_PACKAGE = config.getString("pojoPackage");
+            JSONObject pojo = config.getJSONObject("pojo");
+            POJO_CONFIG = JSON.toJavaObject(pojo, PojoConfig.class);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
@@ -83,7 +84,7 @@ public class Config {
         return TARGET_PATH;
     }
 
-    public static String pojoPackage() {
-        return POJO_PACKAGE;
+    public static PojoConfig pojoConfig() {
+        return POJO_CONFIG;
     }
 }

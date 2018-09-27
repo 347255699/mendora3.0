@@ -1,7 +1,6 @@
 package org.mendora.generate.config;
 
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author menfre
@@ -9,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
  * date: 2018/9/26
  * desc: 数据库配置信息
  */
-@Slf4j
 @Data
 public class DbConfig {
     /**

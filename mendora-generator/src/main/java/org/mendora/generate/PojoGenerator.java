@@ -48,26 +48,29 @@ public class PojoGenerator {
                         parseType(td.getType()).ifPresent(type -> {
                             // 字段名称
                             String pojoField = StringUtils.lineToHump(td.getField());
-
-                            // 构造setter方法
-                            MethodSpec setter = MethodSpec.methodBuilder("set" + StringUtils.firstLetterToUpperCase(pojoField))
-                                    .addModifiers(Modifier.PUBLIC)
-                                    .returns(ClassName.get(Config.pojoPackage(), pojoName))
-                                    .addParameter(type, pojoField)
-                                    .addStatement("this.$L = $L", pojoField, pojoField)
-                                    .addStatement("return this")
-                                    .build();
-
                             // 构造成员属性
-                            FieldSpec field = FieldSpec.builder(type, pojoField)
+                            FieldSpec.Builder fieldBuilder = FieldSpec.builder(type, pojoField)
                                     .addModifiers(Modifier.PRIVATE)
-                                    .addAnnotation(lombok(LombokAnnotation.GETTER))
-                                    .build();
+                                    .addAnnotation(lombok(LombokAnnotation.GETTER));
+                            if (Config.pojoConfig().isChainMode()) {
 
-                            pojoBuilder.addField(field).addMethod(setter);
+                                // 构造setter方法
+                                MethodSpec setter = MethodSpec.methodBuilder("set" + StringUtils.firstLetterToUpperCase(pojoField))
+                                        .addModifiers(Modifier.PUBLIC)
+                                        .returns(ClassName.get(Config.pojoConfig().getPackageName(), pojoName))
+                                        .addParameter(type, pojoField)
+                                        .addStatement("this.$L = $L", pojoField, pojoField)
+                                        .addStatement("return this")
+                                        .build();
+                                pojoBuilder.addMethod(setter);
+                            }else{
+                                fieldBuilder.addAnnotation(lombok((LombokAnnotation.SETTER)));
+                            }
+
+                            pojoBuilder.addField(fieldBuilder.build());
                         })
                 );
-                JavaFile javaFile = JavaFile.builder(Config.pojoPackage(), pojoBuilder.build()).build();
+                JavaFile javaFile = JavaFile.builder(Config.pojoConfig().getPackageName(), pojoBuilder.build()).build();
                 javaFile.writeTo(Paths.get(Config.targetPath()));
             } catch (Exception e) {
                 log.error(e.getMessage(), e);

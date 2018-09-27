@@ -15,5 +15,5 @@ public interface LombokAnnotation {
     String SLF4J = "Slf4j";
     String REQUIRED_ARGS_CONSTRUCTOR = "RequiredArgsConstructor";
     String ALL_ARGS_CONSTRUCTOR = "AllArgsConstructor";
-
+    String NO_ARGS_CONSTRUCTOR = "NoArgsConstructor";
 }

@@ -72,7 +72,7 @@ public class JdbcDriver {
      * @throws Exception
      */
     public List<TableDesc> desc(String tableName) throws Exception {
-        ResultSet rs = query("desc " + tableName);
+        ResultSet rs = query("show full columns from " + tableName);
         List<TableDesc> tds = parse(TableDesc.class, rs, field -> {
             if (field.endsWith(SUFFIX_VAL)) {
                 field = field.substring(0, field.indexOf(SUFFIX_VAL));

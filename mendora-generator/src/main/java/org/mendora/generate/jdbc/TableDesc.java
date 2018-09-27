@@ -12,8 +12,11 @@ import lombok.Data;
 public class TableDesc {
     private String field;
     private String type;
+    private String collation;
     private String isNull;
     private String key;
     private String defaultVal;
     private String extra;
+    private String privileges;
+    private String comment;
 }

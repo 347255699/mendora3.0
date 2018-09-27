@@ -11,6 +11,14 @@
   "targetPath": "/Users/pundix043/workbench/mendora/generator",
   "pojo": {
     "packageName": "org.mendora.generate",
-    "chainMode":true
+    // noArgs, allArgs,
+    "constructor": "reqArgs",
+    "dataAnnotation": true,
+    "chainMode": false,
+    "nonNull": [
+      "id",
+      "name"
+    ],
+    "toStringAnnotation": true
   }
 }

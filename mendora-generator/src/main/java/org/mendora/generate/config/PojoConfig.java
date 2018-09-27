@@ -11,5 +11,9 @@ import lombok.Data;
 @Data
 public class PojoConfig {
     private String packageName;
-    private boolean chainMode;
+    private boolean chainMode = true;
+    private boolean dataAnnotation = false;
+    private String constructor;
+    private String[] nonNull;
+    private boolean toStringAnnotation = false;
 }

@@ -1,4 +1,4 @@
-package org.mendora.generate.util;
+package org.mendora.generate.lombok;
 
 /**
  * @author menfre

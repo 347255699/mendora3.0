@@ -9,4 +9,11 @@ package org.mendora.generate.util;
 public interface LombokAnnotation {
     String GETTER = "Getter";
     String SETTER = "Setter";
+    String TO_STRING = "ToString";
+    String DATA = "Data";
+    String NON_NULL = "NonNull";
+    String SLF4J = "Slf4j";
+    String REQUIRED_ARGS_CONSTRUCTOR = "RequiredArgsConstructor";
+    String ALL_ARGS_CONSTRUCTOR = "AllArgsConstructor";
+
 }

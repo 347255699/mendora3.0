@@ -9,6 +9,8 @@ import org.mendora.generate.util.LombokAnnotation;
 import org.mendora.generate.util.StringUtils;
 
 import javax.lang.model.element.Modifier;
+import java.lang.invoke.MethodType;
+import java.lang.reflect.Method;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -38,17 +40,33 @@ public class PojoGenerator {
     public void generate() {
         Arrays.asList(Config.tables()).forEach(name -> {
             try {
+                String pojoName = StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(name));
                 // 取得表格信息, 生成pojo
-                TypeSpec.Builder pojoBuilder = TypeSpec.classBuilder(StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(name)))
-                        .addModifiers(Modifier.PUBLIC);
+                TypeSpec.Builder pojoBuilder = TypeSpec.classBuilder(pojoName)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addAnnotation(lombok(LombokAnnotation.TO_STRING));
                 List<TableDesc> tds = JdbcDriver.newDriver().desc(name);
                 tds.forEach(td ->
                         parseType(td.getType()).ifPresent(type -> {
-                            FieldSpec field = FieldSpec.builder(type, StringUtils.lineToHump(td.getField()))
+                            // 字段名称
+                            String pojoField = StringUtils.lineToHump(td.getField());
+
+                            // 构造setter方法
+                            MethodSpec setter = MethodSpec.methodBuilder("set" + StringUtils.firstLetterToUpperCase(pojoField))
+                                    .addModifiers(Modifier.PUBLIC)
+                                    .returns(ClassName.get(Config.pojoPackage(), pojoName))
+                                    .addParameter(type, pojoField)
+                                    .addStatement("this.$L = $L", pojoField, pojoField)
+                                    .addStatement("return this")
+                                    .build();
+
+                            // 构造成员属性
+                            FieldSpec field = FieldSpec.builder(type, pojoField)
                                     .addModifiers(Modifier.PRIVATE)
                                     .addAnnotation(lombok(LombokAnnotation.GETTER))
                                     .build();
-                            pojoBuilder.addField(field);
+
+                            pojoBuilder.addField(field).addMethod(setter);
                         })
                 );
                 JavaFile javaFile = JavaFile.builder(Config.pojoPackage(), pojoBuilder.build()).build();

@@ -1,0 +1,13 @@
+{
+  "db": {
+    "driverClass": "com.mysql.jdbc.Driver",
+    "user": "root",
+    "password": "wokoworks002",
+    "url": "jdbc:mysql://localhost:3306/pos_merchant?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
+  },
+  "tables": [
+    "platform_user"
+  ],
+  "targetPath": "/Users/pundix043/workbench/mendora/generator",
+  "pojoPackage":"org.mendora.generate"
+}

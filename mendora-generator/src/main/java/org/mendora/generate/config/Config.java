@@ -13,22 +13,36 @@ import java.nio.ByteBuffer;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc:
+ * desc: 全局配置
  */
 @Slf4j
 public class Config {
+    /**
+     * 数据库配置
+     */
     private static DbConfig DB_CONFIG;
-
+    /**
+     * 表名称数组
+     */
     private static String[] TABLES;
-
+    /**
+     * 生成的目标路径,文件夹
+     */
     private static String TARGET_PATH;
-
+    /**
+     * pojo包名
+     */
     private static String POJO_PACKAGE;
-
+    /**
+     * 配置文件路径
+     */
     private static final String CONFIG_FILE_PATH = "config.json";
 
     static {
         try {
+            /**
+             * 打开配置文件通道
+             */
             RandomAccessFile aFile = new RandomAccessFile(PathUtils.root() + CONFIG_FILE_PATH, "r");
             final ByteBuffer buf = ByteBuffer.allocate(1024);
             final byte[] bytes = new byte[1024];
@@ -41,7 +55,10 @@ public class Config {
                 buf.compact();
                 read = aFile.getChannel().read(buf);
             }
+            // Str -> JsonObject
             JSONObject config = JSON.parseObject(jsonStr.toString());
+
+            // 解析配置信息
             JSONObject db = config.getJSONObject("db");
             DB_CONFIG = JSON.toJavaObject(db, DbConfig.class);
             JSONArray tables = config.getJSONArray("tables");

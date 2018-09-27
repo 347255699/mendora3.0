@@ -18,7 +18,7 @@ public class BeanUtils {
     private static final String FIELD_CLASS = "class";
 
     /**
-     * 写入数值到projo
+     * 实例化并填充数据到pojo
      *
      * @param clazz
      * @param vf
@@ -30,7 +30,7 @@ public class BeanUtils {
     }
 
     /**
-     * 写入数值到pojo
+     * 填充数据到pojo实例
      *
      * @param t
      * @param vf
@@ -42,7 +42,7 @@ public class BeanUtils {
     }
 
     /**
-     * 写入数值到pojo
+     * 填充数据到pojo实例并提供字段映射器
      *
      * @param t
      * @param vf

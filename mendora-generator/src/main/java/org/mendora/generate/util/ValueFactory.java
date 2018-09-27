@@ -1,20 +1,19 @@
 package org.mendora.generate.util;
 
-import java.sql.SQLException;
-
 /**
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc:
+ * desc: 数值生成工厂
  */
 @FunctionalInterface
 public interface ValueFactory {
     /**
-     * 产生数值
+     * 根据字段产生数值
      *
-     * @param field
-     * @return
+     * @param field 字段名称
+     * @return 数值
+     * @throws Exception 产生数值时出现的异常
      */
-    Object val(String field) throws SQLException;
+    Object val(String field) throws Exception;
 }

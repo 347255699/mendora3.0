@@ -6,7 +6,7 @@ import lombok.Data;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc:
+ * desc: 表结构描述
  */
 @Data
 public class TableDesc {

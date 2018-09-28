@@ -1,5 +1,6 @@
 package org.mendora.generate.generator;
 
+import com.alibaba.fastjson.JSONObject;
 import com.squareup.javapoet.*;
 import lombok.extern.slf4j.Slf4j;
 import org.mendora.generate.config.Config;
@@ -143,8 +144,9 @@ class PojoGenerator implements Generator {
     public void generate() {
         Arrays.asList(Config.tables()).forEach(name -> {
             try {
-                String pojoName = StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(name));
-                TypeSpec.Builder pojoBuilder = typeSpecBuilder(pojoName);
+                String letterPojoName = StringUtils.lineToHump(name);
+                String upperPojoName = StringUtils.firstLetterToUpperCase(letterPojoName);
+                TypeSpec.Builder pojoBuilder = typeSpecBuilder(upperPojoName);
                 List<TableDesc> tds = JdbcDriver.newDriver().desc(name);
                 tds.forEach(td ->
                         parseType(td.getType()).ifPresent(type -> {
@@ -154,7 +156,7 @@ class PojoGenerator implements Generator {
                             pojoBuilder.addField(fieldBuilder.build());
                             if (Config.pojoConfig().isChainMode() && !Config.pojoConfig().isDataAnnotation()) {
                                 String methodName = "set" + StringUtils.firstLetterToUpperCase(pojoField);
-                                MethodSpec.Builder setterBuilder = methodSpecBuilder(pojoName, methodName, type, pojoField);
+                                MethodSpec.Builder setterBuilder = methodSpecBuilder(upperPojoName, methodName, type, pojoField);
                                 pojoBuilder.addMethod(setterBuilder.build());
                             }
                         })

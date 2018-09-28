@@ -14,7 +14,7 @@ public class PojoConfig {
     private boolean chainMode = true;
     private boolean dataAnnotation = false;
     private String constructor;
-    private String[] nonNull;
     private boolean toStringAnnotation = false;
     private boolean slf4jAnnotation = false;
+    private String[] nonNull;
 }

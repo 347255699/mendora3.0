@@ -21,8 +21,9 @@ public class GeneratorFactory {
 
     /**
      * 生产
-     * @param type
-     * @return
+     *
+     * @param type 生成器类型
+     * @return 生成器
      */
     public static Generator product(Type type) {
         switch (type) {

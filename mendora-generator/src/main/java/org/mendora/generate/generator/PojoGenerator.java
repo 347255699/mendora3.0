@@ -1,6 +1,5 @@
 package org.mendora.generate.generator;
 
-import com.alibaba.fastjson.JSONObject;
 import com.squareup.javapoet.*;
 import lombok.extern.slf4j.Slf4j;
 import org.mendora.generate.config.Config;
@@ -75,13 +74,12 @@ class PojoGenerator implements Generator {
      */
     private MethodSpec.Builder methodSpecBuilder(String pojoName, String methodName, Class<?> type, String pojoField) {
         // 构造setter方法
-        MethodSpec.Builder setterBuilder = MethodSpec.methodBuilder(methodName)
+        return MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(Config.pojoConfig().getPackageName(), pojoName))
                 .addParameter(type, pojoField)
                 .addStatement("this.$L = $L", pojoField, pojoField)
                 .addStatement("return this");
-        return setterBuilder;
     }
 
     /**
@@ -134,7 +132,7 @@ class PojoGenerator implements Generator {
         if (type.contains(CONTENT_VARCHAR) || CONTENT_TEXT.equals(type)) {
             clazz = String.class;
         }
-        return Optional.of(clazz);
+        return Optional.ofNullable(clazz);
     }
 
     /**

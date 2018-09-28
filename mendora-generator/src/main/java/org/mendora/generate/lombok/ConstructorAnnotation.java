@@ -31,11 +31,12 @@ public enum ConstructorAnnotation {
     }
 
     public static Optional<ConstructorAnnotation> valOf(String val) {
-        for (ConstructorAnnotation ca : values()) {
-            if (ca.val.equals(val)) {
-                return Optional.of(ca);
+        ConstructorAnnotation ca = null;
+        for (ConstructorAnnotation _ca : values()) {
+            if (_ca.val.equals(val)) {
+                ca = _ca;
             }
         }
-        return Optional.of(null);
+        return Optional.ofNullable(ca);
     }
 }

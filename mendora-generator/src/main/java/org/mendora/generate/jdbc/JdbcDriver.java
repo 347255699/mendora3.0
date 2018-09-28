@@ -26,7 +26,6 @@ import java.util.List;
  */
 @Slf4j
 public class JdbcDriver {
-    private DbConfig dbConfig;
     private Connection conn;
 
     /**
@@ -39,7 +38,7 @@ public class JdbcDriver {
      * 驱动资源初始化
      */
     private JdbcDriver() {
-        dbConfig = Config.dbConfig();
+        DbConfig dbConfig = Config.dbConfig();
         try {
             Class.forName(dbConfig.getDriverClass());
             conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUser(), dbConfig.getPassword());
@@ -73,7 +72,7 @@ public class JdbcDriver {
      */
     public List<TableDesc> desc(String tableName) throws Exception {
         ResultSet rs = query("show full columns from " + tableName);
-        List<TableDesc> tds = parse(TableDesc.class, rs, field -> {
+        return parse(TableDesc.class, rs, field -> {
             if (field.endsWith(SUFFIX_VAL)) {
                 field = field.substring(0, field.indexOf(SUFFIX_VAL));
             }
@@ -82,7 +81,6 @@ public class JdbcDriver {
             }
             return StringUtils.firstLetterToUpperCase(field);
         });
-        return tds;
     }
 
     /**

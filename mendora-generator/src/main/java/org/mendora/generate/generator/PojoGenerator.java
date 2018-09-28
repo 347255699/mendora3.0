@@ -19,7 +19,7 @@ import java.util.Optional;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc:
+ * desc: Pojo生成器
  */
 @Slf4j
 class PojoGenerator implements Generator {
@@ -42,7 +42,7 @@ class PojoGenerator implements Generator {
      * @param pojoName Pojo名称
      * @return 类型构建者
      */
-    public TypeSpec.Builder typeSpecBuilder(String pojoName) {
+    private TypeSpec.Builder typeSpecBuilder(String pojoName) {
         // 取得表格信息, 生成pojo
         TypeSpec.Builder pojoBuilder = TypeSpec.classBuilder(pojoName)
                 .addModifiers(Modifier.PUBLIC);
@@ -63,13 +63,22 @@ class PojoGenerator implements Generator {
         return pojoBuilder;
     }
 
-    private MethodSpec.Builder methodSpecBuilder(String pojoName, String methodName, Class<?>[] types, String[] pojoFields){
+    /**
+     * 方法描述器
+     *
+     * @param pojoName   Pojo名称
+     * @param methodName 方法名称
+     * @param type       属性类型
+     * @param pojoField  属性名称
+     * @return 方法构建者
+     */
+    private MethodSpec.Builder methodSpecBuilder(String pojoName, String methodName, Class<?> type, String pojoField) {
         // 构造setter方法
         MethodSpec.Builder setterBuilder = MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ClassName.get(Config.pojoConfig().getPackageName(), pojoName))
-                .addParameter(types[0], pojoFields[0])
-                .addStatement("this.$L = $L", pojoFields[0], pojoFields[0])
+                .addParameter(type, pojoField)
+                .addStatement("this.$L = $L", pojoField, pojoField)
                 .addStatement("return this");
         return setterBuilder;
     }
@@ -77,13 +86,11 @@ class PojoGenerator implements Generator {
     /**
      * 字段描述器
      *
-     * @param type        字段类型
-     * @param pojoField   字段名称
-     * @param pojoName    Pojo名称
-     * @param pojoBuilder Pojo构建器
-     * @param comment     注释
+     * @param type      字段类型
+     * @param pojoField 字段名称
+     * @param comment   注释
      */
-    private void fieldSpecBuilder(Class<?> type, String pojoField, String pojoName, TypeSpec.Builder pojoBuilder, String comment) {
+    private FieldSpec.Builder fieldSpecBuilder(Class<?> type, String pojoField, String comment) {
         // 构造成员属性
         FieldSpec.Builder fieldBuilder = FieldSpec.builder(type, pojoField)
                 .addModifiers(Modifier.PRIVATE);
@@ -92,10 +99,7 @@ class PojoGenerator implements Generator {
         }
         if (!Config.pojoConfig().isDataAnnotation()) {
             fieldBuilder.addAnnotation(lombok(LombokAnnotation.GETTER, LOMBOK_PACKAGE));
-            if (Config.pojoConfig().isChainMode()) {
-
-               // pojoBuilder.addMethod(setter);
-            } else {
+            if (!Config.pojoConfig().isChainMode()) {
                 fieldBuilder.addAnnotation(lombok(LombokAnnotation.SETTER, LOMBOK_PACKAGE));
             }
             if (Config.pojoConfig().getNonNull() != null) {
@@ -106,14 +110,14 @@ class PojoGenerator implements Generator {
                 });
             }
         }
-        pojoBuilder.addField(fieldBuilder.build());
+        return fieldBuilder;
     }
 
     /**
      * 映射类型
      *
-     * @param type
-     * @return
+     * @param type java类型名称
+     * @return java类型
      */
     private Optional<Class<?>> parseType(String type) {
         Class<?> clazz = null;
@@ -145,9 +149,14 @@ class PojoGenerator implements Generator {
                 tds.forEach(td ->
                         parseType(td.getType()).ifPresent(type -> {
                             // 字段名称
-//                            td.setType();
                             String pojoField = StringUtils.lineToHump(td.getField());
-                            fieldSpecBuilder(type, pojoField, pojoName, pojoBuilder, td.getComment());
+                            FieldSpec.Builder fieldBuilder = fieldSpecBuilder(type, pojoField, td.getComment());
+                            pojoBuilder.addField(fieldBuilder.build());
+                            if (Config.pojoConfig().isChainMode() && !Config.pojoConfig().isDataAnnotation()) {
+                                String methodName = "set" + StringUtils.firstLetterToUpperCase(pojoField);
+                                MethodSpec.Builder setterBuilder = methodSpecBuilder(pojoName, methodName, type, pojoField);
+                                pojoBuilder.addMethod(setterBuilder.build());
+                            }
                         })
                 );
                 JavaFile javaFile = JavaFile.builder(Config.pojoConfig().getPackageName(), pojoBuilder.build()).build();

@@ -1,38 +1,36 @@
 {
   "db": {
     "driverClass": "com.mysql.cj.jdbc.Driver",
-    "user": "root",
-    "password": "wokoworks002",
-    "url": "jdbc:mysql://localhost:3306/pos_merchant?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
+    "user": "menfre",
+    "password": "Menfre123!@#",
+    "url": "jdbc:mysql://123.207.55.60:3306/mendora?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
   "tables": [
-    "platform_user",
-    "platform_user_app",
-    "platform_user_app_version"
+    "access",
+    "access_token",
+    "action",
+    "attachment",
+    "collaboration",
+    "comment",
+    "deploy_key",
+    "webhook"
   ],
-  "targetPath": "/Users/pundix043/workbench/mendora/generator",
+  "targetPath": "H:\\workbench\\mendora\\mendora3.0\\generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
     // noArgs, allArgs, reqArgs
-    "constructor": "allArgs",
+    "constructor": "reqArgs",
     // 是否需要 @toData, 默认不开启(注意: 该注解开启后会默认忽略其他Lombok注解)
     "dataAnnotation": false,
     // 是否开启链式, 默认开启
-    "chainMode": true,
+    "chainMode": false,
     "nonNull": [
       "id",
-      "name"
+      "userId"
     ],
     // 是否需要 @toString, 默认不开启
-    "toStringAnnotation": false,
+    "toStringAnnotation": true,
     // 是否需要 @Slf4j, 默认不开启
     "slf4jAnnotation": true
-  },
-  "repo":{
-    "keyType":"int",
-    "packageName":"org.mendora.repository",
-    "interface":{
-      "superInterface":"BaseRepository"
-    }
   }
 }

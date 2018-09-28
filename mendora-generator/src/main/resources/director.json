@@ -12,7 +12,7 @@
   ],
   "targetPath": "/Users/pundix043/workbench/mendora/generator",
   "pojo": {
-    "packageName": "org.mendora.generate",
+    "packageName": "org.mendora.pojo",
     // noArgs, allArgs, reqArgs
     "constructor": "allArgs",
     // 是否需要 @toData, 默认不开启(注意: 该注解开启后会默认忽略其他Lombok注解)
@@ -27,5 +27,12 @@
     "toStringAnnotation": false,
     // 是否需要 @Slf4j, 默认不开启
     "slf4jAnnotation": true
+  },
+  "repo":{
+    "keyType":"int",
+    "packageName":"org.mendora.repository",
+    "interface":{
+      "superInterface":"BaseRepository"
+    }
   }
 }

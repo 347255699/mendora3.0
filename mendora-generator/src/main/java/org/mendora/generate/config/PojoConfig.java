@@ -16,4 +16,5 @@ public class PojoConfig {
     private String constructor;
     private String[] nonNull;
     private boolean toStringAnnotation = false;
+    private boolean slf4jAnnotation = false;
 }

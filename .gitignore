@@ -4,3 +4,4 @@
 *.iml
 generator/*
 generate/*
+*/src/main/resources/*

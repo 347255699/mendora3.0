@@ -1,6 +1,7 @@
 package org.mendora.generate;
 
 import lombok.extern.slf4j.Slf4j;
+import org.mendora.generate.generator.GeneratorFactory;
 
 /**
  * @author menfre
@@ -9,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
  * desc:
  */
 @Slf4j
-public class Generator {
-    public static void generatePojo(){
-        PojoGenerator.newGenerator().generate();
+public class MainGenerator {
+    public static void generatePojo() {
+        GeneratorFactory.product(GeneratorFactory.Type.POJO).generate();
     }
 
     public static void main(String[] args) {

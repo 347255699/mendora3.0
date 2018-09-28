@@ -1,4 +1,4 @@
-package org.mendora.generate;
+package org.mendora.generate.generator;
 
 import com.squareup.javapoet.*;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +22,12 @@ import java.util.Optional;
  * desc:
  */
 @Slf4j
-class PojoGenerator {
+class PojoGenerator implements Generator {
     private static final String CONTENT_INTEGER = "int";
     private static final String CONTENT_VARCHAR = "varchar";
     private static final String CONTENT_TEXT = "text";
     private static final String CONTENT_BIG = "big";
     private static final String CONTENT_SHORT = "tiny";
-    private static final String LOMBOK_PACKAGE = "lombok";
 
     private PojoGenerator() {
     }
@@ -47,16 +46,19 @@ class PojoGenerator {
         // 取得表格信息, 生成pojo
         TypeSpec.Builder pojoBuilder = TypeSpec.classBuilder(pojoName)
                 .addModifiers(Modifier.PUBLIC);
+        if (Config.pojoConfig().isToStringAnnotation()) {
+            pojoBuilder.addAnnotation(lombok(LombokAnnotation.SLF4J, LOMBOK_EXTERN_SLF4J_PACKAGE));
+        }
         if (!Config.pojoConfig().isDataAnnotation()) {
             if (Config.pojoConfig().isToStringAnnotation()) {
-                pojoBuilder.addAnnotation(lombok(LombokAnnotation.TO_STRING));
+                pojoBuilder.addAnnotation(lombok(LombokAnnotation.TO_STRING, LOMBOK_PACKAGE));
             }
             String constructor = Config.pojoConfig().getConstructor();
             if (constructor != null && constructor.length() > 0) {
-                ConstructorAnnotation.valOf(constructor).ifPresent(ca -> pojoBuilder.addAnnotation(lombok(ca.name)));
+                ConstructorAnnotation.valOf(constructor).ifPresent(ca -> pojoBuilder.addAnnotation(lombok(ca.name, LOMBOK_PACKAGE)));
             }
         } else {
-            pojoBuilder.addAnnotation(lombok(LombokAnnotation.DATA));
+            pojoBuilder.addAnnotation(lombok(LombokAnnotation.DATA, LOMBOK_PACKAGE));
         }
         return pojoBuilder;
     }
@@ -79,7 +81,7 @@ class PojoGenerator {
             fieldBuilder.addJavadoc(comment);
         }
         if (!Config.pojoConfig().isDataAnnotation()) {
-            fieldBuilder.addAnnotation(lombok(LombokAnnotation.GETTER));
+            fieldBuilder.addAnnotation(lombok(LombokAnnotation.GETTER, LOMBOK_PACKAGE));
             if (Config.pojoConfig().isChainMode()) {
                 // 构造setter方法
                 MethodSpec setter = MethodSpec.methodBuilder("set" + StringUtils.firstLetterToUpperCase(pojoField))
@@ -91,52 +93,17 @@ class PojoGenerator {
                         .build();
                 pojoBuilder.addMethod(setter);
             } else {
-                fieldBuilder.addAnnotation(lombok((LombokAnnotation.SETTER)));
+                fieldBuilder.addAnnotation(lombok(LombokAnnotation.SETTER, LOMBOK_PACKAGE));
             }
             if (Config.pojoConfig().getNonNull() != null) {
                 Arrays.asList(Config.pojoConfig().getNonNull()).forEach(field -> {
                     if (field.equals(pojoField)) {
-                        fieldBuilder.addAnnotation(lombok(LombokAnnotation.NON_NULL));
+                        fieldBuilder.addAnnotation(lombok(LombokAnnotation.NON_NULL, LOMBOK_PACKAGE));
                     }
                 });
             }
         }
         pojoBuilder.addField(fieldBuilder.build());
-    }
-
-    /**
-     * 生成
-     */
-    void generate() {
-        Arrays.asList(Config.tables()).forEach(name -> {
-            try {
-                String pojoName = StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(name));
-                TypeSpec.Builder pojoBuilder = typeSpecBuilder(pojoName);
-                List<TableDesc> tds = JdbcDriver.newDriver().desc(name);
-                tds.forEach(td ->
-                        parseType(td.getType()).ifPresent(type -> {
-                            // 字段名称
-                            String pojoField = StringUtils.lineToHump(td.getField());
-                            fieldSpecBuilder(type, pojoField, pojoName, pojoBuilder, td.getComment());
-                        })
-                );
-                JavaFile javaFile = JavaFile.builder(Config.pojoConfig().getPackageName(), pojoBuilder.build()).build();
-                javaFile.writeTo(Paths.get(Config.targetPath()));
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        });
-    }
-
-    /**
-     * 添加lombok注解
-     *
-     * @param name
-     * @return
-     */
-    private AnnotationSpec lombok(String name) {
-        return AnnotationSpec.builder(ClassName.get(LOMBOK_PACKAGE, name))
-                .build();
     }
 
     /**
@@ -160,5 +127,30 @@ class PojoGenerator {
             clazz = String.class;
         }
         return Optional.of(clazz);
+    }
+
+    /**
+     * 生成
+     */
+    @Override
+    public void generate() {
+        Arrays.asList(Config.tables()).forEach(name -> {
+            try {
+                String pojoName = StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(name));
+                TypeSpec.Builder pojoBuilder = typeSpecBuilder(pojoName);
+                List<TableDesc> tds = JdbcDriver.newDriver().desc(name);
+                tds.forEach(td ->
+                        parseType(td.getType()).ifPresent(type -> {
+                            // 字段名称
+                            String pojoField = StringUtils.lineToHump(td.getField());
+                            fieldSpecBuilder(type, pojoField, pojoName, pojoBuilder, td.getComment());
+                        })
+                );
+                JavaFile javaFile = JavaFile.builder(Config.pojoConfig().getPackageName(), pojoBuilder.build()).build();
+                javaFile.writeTo(Paths.get(Config.targetPath()));
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
+        });
     }
 }

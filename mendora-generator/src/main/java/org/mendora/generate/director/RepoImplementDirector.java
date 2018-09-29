@@ -11,4 +11,5 @@ import lombok.Data;
 @Data
 public class RepoImplementDirector {
     private String superClass;
+    private boolean slf4jAnnotation;
 }

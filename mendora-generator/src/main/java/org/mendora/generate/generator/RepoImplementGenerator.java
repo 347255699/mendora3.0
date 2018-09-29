@@ -8,6 +8,7 @@ import org.mendora.generate.director.Director;
 import org.mendora.generate.director.PojoDirector;
 import org.mendora.generate.director.RepoDirector;
 import org.mendora.generate.jdbc.TableDesc;
+import org.mendora.generate.lombok.LombokAnnotation;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
@@ -24,7 +25,7 @@ public class RepoImplementGenerator implements Generator {
     private RepoImplementGenerator() {
     }
 
-    public static RepoImplementGenerator newGenerator() {
+    static RepoImplementGenerator newGenerator() {
         return new RepoImplementGenerator();
     }
 
@@ -46,9 +47,15 @@ public class RepoImplementGenerator implements Generator {
         } catch (ClassNotFoundException e) {
             log.error(e.getMessage(), e);
         }
-        return TypeSpec.classBuilder(pojoName + "RepositoryImpl")
+        TypeSpec.Builder repoImplBuilder = TypeSpec.classBuilder(pojoName + "RepositoryImpl")
                 .addModifiers(Modifier.PUBLIC)
-                .superclass(repoClass)
                 .addSuperinterface(ClassName.get(repoDirector.getPackageName(), pojoName + "Repository"));
+        if (Director.repoDirector().getImplementDirector().isSlf4jAnnotation()) {
+            repoImplBuilder.addAnnotation(lombok(LombokAnnotation.SLF4J, LOMBOK_EXTERN_SLF4J_PACKAGE));
+        }
+        if (repoClass != null) {
+            repoImplBuilder.superclass(repoClass);
+        }
+        return repoImplBuilder;
     }
 }

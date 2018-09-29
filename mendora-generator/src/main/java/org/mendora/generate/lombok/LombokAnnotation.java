@@ -12,6 +12,7 @@ public interface LombokAnnotation {
     String TO_STRING = "ToString";
     String DATA = "Data";
     String NON_NULL = "NonNull";
+    String BUILDER = "Builder";
     String SLF4J = "Slf4j";
     String REQUIRED_ARGS_CONSTRUCTOR = "RequiredArgsConstructor";
     String ALL_ARGS_CONSTRUCTOR = "AllArgsConstructor";

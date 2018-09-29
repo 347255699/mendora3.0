@@ -11,15 +11,14 @@
   "targetPath": "/Users/pundix043/workbench/mendora/generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
-    // noArgs, allArgs, reqArgs
-    "constructor": "allArgs",
-    "dataAnnotation": false,
-    "chainMode": true,
-    "nonNull": [
-      "id"
+    // noArgs, allArgs
+    "constructor": [
+      "allArgs",
+      "noArgs"
     ],
-    "toStringAnnotation": true,
-    "slf4jAnnotation": true
+    "dataAnnotation": false,
+    "builderAnnotation": true,
+    "toStringAnnotation": true
   },
   "repo": {
     "packageName": "org.mendora.repository",
@@ -29,7 +28,8 @@
       "superInterface": "BaseRepository"
     },
     "implementDirector": {
-      "superClass": "BaseRepositoryImpl"
+      "superClass": "BaseRepositoryImpl",
+      "slf4jAnnotation": true
     }
   }
 }

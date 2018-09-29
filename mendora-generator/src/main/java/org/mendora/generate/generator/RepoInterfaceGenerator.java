@@ -34,9 +34,12 @@ class RepoInterfaceGenerator implements Generator {
         } catch (ClassNotFoundException e) {
             log.error(e.getMessage(), e);
         }
-        return TypeSpec.interfaceBuilder(pojoName + "Repository")
-                .addModifiers(Modifier.PUBLIC)
-                .addSuperinterface(repoInterface);
+        TypeSpec.Builder repoInterfaceBuilder = TypeSpec.interfaceBuilder(pojoName + "Repository")
+                .addModifiers(Modifier.PUBLIC);
+        if (repoInterface != null) {
+            repoInterfaceBuilder.addSuperinterface(repoInterface);
+        }
+        return repoInterfaceBuilder;
     }
 
     static RepoInterfaceGenerator newGenerator() {
@@ -45,8 +48,6 @@ class RepoInterfaceGenerator implements Generator {
 
     @Override
     public TypeSpec generate(String pojoName, List<TableDesc> tds) {
-
         return interfaceTypeSpecBuilder(pojoName).build();
-
     }
 }

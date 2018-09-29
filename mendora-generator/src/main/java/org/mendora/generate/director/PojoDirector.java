@@ -11,10 +11,8 @@ import lombok.Data;
 @Data
 public class PojoDirector {
     private String packageName;
-    private boolean chainMode = true;
+    private boolean builderAnnotation = false;
     private boolean dataAnnotation = false;
-    private String constructor;
+    private String[] constructor;
     private boolean toStringAnnotation = false;
-    private boolean slf4jAnnotation = false;
-    private String[] nonNull;
 }

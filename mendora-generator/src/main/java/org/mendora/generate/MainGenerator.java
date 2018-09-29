@@ -29,6 +29,10 @@ public class MainGenerator {
         return GeneratorFactory.product(GeneratorFactory.Type.REPO_INTERFACE).generate(pojoName, tds);
     }
 
+    private static TypeSpec generateRepoImplement(String pojoName, List<TableDesc> tds) {
+        return GeneratorFactory.product(GeneratorFactory.Type.REPO_IMPLEMENT).generate(pojoName, tds);
+    }
+
     public static void generate() {
         Arrays.asList(Director.tables()).forEach(tableName -> {
             String pojoName = StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(tableName));
@@ -44,6 +48,11 @@ public class MainGenerator {
                 TypeSpec repoInterfaceTypeSpec = generateRepoInterface(pojoName, tds);
                 JavaFile repoInterfaceJavaFile = JavaFile.builder(Director.repoDirector().getPackageName(), repoInterfaceTypeSpec).build();
                 repoInterfaceJavaFile.writeTo(Paths.get(Director.targetPath()));
+
+                // 生成repository implement
+                TypeSpec repoImplementTypeSpec = generateRepoImplement(pojoName, tds);
+                JavaFile repoImplementJavaFile = JavaFile.builder(Director.repoDirector().getPackageName() + ".impl", repoImplementTypeSpec).build();
+                repoImplementJavaFile.writeTo(Paths.get(Director.targetPath()));
             } catch (Exception e) {
                 log.error(e.getMessage(), e);
             }

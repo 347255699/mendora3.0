@@ -54,10 +54,10 @@ class PojoGenerator implements Generator {
                     ConstructorAnnotation.valOf(constructor).ifPresent(ca -> pojoBuilder.addAnnotation(lombok(ca.name, LOMBOK_PACKAGE))));
 
         }
-        if (!Director.pojoDirector().isDataAnnotation()) {
+        if (Director.pojoDirector().isDataAnnotation()) {
             pojoBuilder.addAnnotation(lombok(LombokAnnotation.DATA, LOMBOK_PACKAGE));
         }
-        if (!Director.pojoDirector().isBuilderAnnotation()) {
+        if (Director.pojoDirector().isBuilderAnnotation()) {
             pojoBuilder.addAnnotation(lombok(LombokAnnotation.BUILDER, LOMBOK_PACKAGE));
         }
         return pojoBuilder;

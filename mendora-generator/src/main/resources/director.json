@@ -16,9 +16,9 @@
       "allArgs",
       "noArgs"
     ],
-    "dataAnnotation": false,
+    "dataAnnotation": true,
     "builderAnnotation": true,
-    "toStringAnnotation": true
+    "toStringAnnotation": false
   },
   "repo": {
     "packageName": "org.mendora.repository",

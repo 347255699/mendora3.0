@@ -14,9 +14,9 @@ public class GeneratorFactory {
          */
         POJO,
         /**
-         * repository
+         * repository interface
          */
-        REPO
+        REPO_INTERFACE
     }
 
     /**
@@ -29,8 +29,8 @@ public class GeneratorFactory {
         switch (type) {
             case POJO:
                 return PojoGenerator.newGenerator();
-            case REPO:
-                return RepoGenerator.newGenerator();
+            case REPO_INTERFACE:
+                return RepoInterfaceGenerator.newGenerator();
             default:
                 return PojoGenerator.newGenerator();
         }

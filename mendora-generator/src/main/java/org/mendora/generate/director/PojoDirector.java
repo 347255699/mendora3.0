@@ -1,4 +1,4 @@
-package org.mendora.generate.config;
+package org.mendora.generate.director;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import lombok.Data;
  * desc:
  */
 @Data
-public class PojoConfig {
+public class PojoDirector {
     private String packageName;
     private boolean chainMode = true;
     private boolean dataAnnotation = false;

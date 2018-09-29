@@ -1,34 +1,35 @@
 {
   "db": {
     "driverClass": "com.mysql.cj.jdbc.Driver",
-    "user": "menfre",
-    "password": "Menfre123!@#",
-    "url": "jdbc:mysql://123.207.55.60:3306/mendora?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
+    "user": "root",
+    "password": "wokoworks002",
+    "url": "jdbc:mysql://localhost:3306/pos_merchant?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
   "tables": [
-    "access",
-    "access_token",
-    "action",
-    "attachment",
-    "collaboration",
-    "comment",
-    "deploy_key",
-    "webhook"
+    "platform_user"
   ],
-  "targetPath": "H:\\workbench\\mendora\\mendora3.0\\generate",
+  "targetPath": "/Users/pundix043/workbench/mendora/generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
     // noArgs, allArgs, reqArgs
     "constructor": "allArgs",
-    // 是否需要 @Data, 默认不开启(注意: 该注解开启后会默认忽略其他Lombok注解)
     "dataAnnotation": false,
-    // 是否开启链式, 默认开启
     "chainMode": true,
     "nonNull": [
+      "id"
     ],
-    // 是否需要 @ToString, 默认不开启
-    "toStringAnnotation": false,
-    // 是否需要 @Slf4j, 默认不开启
-    "slf4jAnnotation": false
+    "toStringAnnotation": true,
+    "slf4jAnnotation": true
+  },
+  "repo": {
+    "packageName": "org.mendora.repository",
+    "primaryKeyType": "java.lang.Integer",
+    "superRepoPackage": "org.mendora.jdbc.repository",
+    "interfaceDirector": {
+      "superInterface": "BaseRepository"
+    },
+    "implementDirector": {
+      "superClass": "BaseRepositoryImpl"
+    }
   }
 }

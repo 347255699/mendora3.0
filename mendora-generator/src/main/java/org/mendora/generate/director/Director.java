@@ -1,4 +1,4 @@
-package org.mendora.generate.config;
+package org.mendora.generate.director;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -16,11 +16,11 @@ import java.nio.ByteBuffer;
  * desc: 全局配置
  */
 @Slf4j
-public class Config {
+public class Director {
     /**
      * 数据库配置
      */
-    private static DbConfig DB_CONFIG;
+    private static DbDirector DB_DIRECTOR;
     /**
      * 表名称数组
      */
@@ -30,20 +30,24 @@ public class Config {
      */
     private static String TARGET_PATH;
     /**
-     * pojo包名
+     * pojo指导器
      */
-    private static PojoConfig POJO_CONFIG;
+    private static PojoDirector POJO_DIRECTOR;
+    /**
+     * repository指导器
+     */
+    private static RepoDirector REPO_DIRECTOR;
     /**
      * 配置文件路径
      */
-    private static final String CONFIG_FILE_PATH = "director.json";
+    private static final String DIRECTOR_FILE_PATH = "director.json";
 
     static {
         try {
             /**
              * 打开配置文件通道
              */
-            RandomAccessFile aFile = new RandomAccessFile(PathUtils.root() + CONFIG_FILE_PATH, "r");
+            RandomAccessFile aFile = new RandomAccessFile(PathUtils.root() + DIRECTOR_FILE_PATH, "r");
             final ByteBuffer buf = ByteBuffer.allocate(1024);
             final byte[] bytes = new byte[1024];
             StringBuilder jsonStr = new StringBuilder();
@@ -56,24 +60,24 @@ public class Config {
                 read = aFile.getChannel().read(buf);
             }
             // Str -> JsonObject
-            JSONObject config = JSON.parseObject(jsonStr.toString());
+            JSONObject director = JSON.parseObject(jsonStr.toString());
 
-            // 解析配置信息
-            JSONObject db = config.getJSONObject("db");
-            DB_CONFIG = JSON.toJavaObject(db, DbConfig.class);
-            JSONArray tables = config.getJSONArray("tables");
+            // 解析指导信息
+            JSONObject db = director.getJSONObject("db");
+            DB_DIRECTOR = JSON.toJavaObject(db, DbDirector.class);
+            JSONArray tables = director.getJSONArray("tables");
             TABLES = new String[tables.size()];
             tables.toArray(TABLES);
-            TARGET_PATH = config.getString("targetPath");
-            JSONObject pojo = config.getJSONObject("pojo");
-            POJO_CONFIG = JSON.toJavaObject(pojo, PojoConfig.class);
+            TARGET_PATH = director.getString("targetPath");
+            POJO_DIRECTOR = JSON.toJavaObject(director.getJSONObject("pojo"), PojoDirector.class);
+            REPO_DIRECTOR = JSON.toJavaObject(director.getJSONObject("repo"), RepoDirector.class);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
     }
 
-    public static DbConfig dbConfig() {
-        return DB_CONFIG;
+    public static DbDirector dbDirector() {
+        return DB_DIRECTOR;
     }
 
     public static String[] tables() {
@@ -84,7 +88,11 @@ public class Config {
         return TARGET_PATH;
     }
 
-    public static PojoConfig pojoConfig() {
-        return POJO_CONFIG;
+    public static PojoDirector pojoDirector() {
+        return POJO_DIRECTOR;
+    }
+
+    public static RepoDirector repoDirector() {
+        return REPO_DIRECTOR;
     }
 }

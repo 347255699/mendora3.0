@@ -1,16 +1,17 @@
 package org.mendora.generate.generator;
 
-import com.squareup.javapoet.*;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.generate.config.Config;
-import org.mendora.generate.jdbc.JdbcDriver;
+import org.mendora.generate.director.Director;
 import org.mendora.generate.jdbc.TableDesc;
 import org.mendora.generate.lombok.ConstructorAnnotation;
 import org.mendora.generate.lombok.LombokAnnotation;
 import org.mendora.generate.util.StringUtils;
 
 import javax.lang.model.element.Modifier;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -42,18 +43,18 @@ class PojoGenerator implements Generator {
      * @param pojoName Pojo名称
      * @return 类型构建者
      */
-    private TypeSpec.Builder typeSpecBuilder(String pojoName) {
+    private TypeSpec.Builder classSpecBuilder(String pojoName) {
         // 取得表格信息, 生成pojo
         TypeSpec.Builder pojoBuilder = TypeSpec.classBuilder(pojoName)
                 .addModifiers(Modifier.PUBLIC);
-        if (Config.pojoConfig().isSlf4jAnnotation()) {
+        if (Director.pojoDirector().isSlf4jAnnotation()) {
             pojoBuilder.addAnnotation(lombok(LombokAnnotation.SLF4J, LOMBOK_EXTERN_SLF4J_PACKAGE));
         }
-        if (!Config.pojoConfig().isDataAnnotation()) {
-            if (Config.pojoConfig().isToStringAnnotation()) {
+        if (!Director.pojoDirector().isDataAnnotation()) {
+            if (Director.pojoDirector().isToStringAnnotation()) {
                 pojoBuilder.addAnnotation(lombok(LombokAnnotation.TO_STRING, LOMBOK_PACKAGE));
             }
-            String constructor = Config.pojoConfig().getConstructor();
+            String constructor = Director.pojoDirector().getConstructor();
             if (constructor != null && constructor.length() > 0) {
                 ConstructorAnnotation.valOf(constructor).ifPresent(ca -> pojoBuilder.addAnnotation(lombok(ca.name, LOMBOK_PACKAGE)));
             }
@@ -76,7 +77,7 @@ class PojoGenerator implements Generator {
         // 构造setter方法
         return MethodSpec.methodBuilder(methodName)
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ClassName.get(Config.pojoConfig().getPackageName(), pojoName))
+                .returns(ClassName.get(Director.pojoDirector().getPackageName(), pojoName))
                 .addParameter(type, pojoField)
                 .addStatement("this.$L = $L", pojoField, pojoField)
                 .addStatement("return this");
@@ -96,13 +97,13 @@ class PojoGenerator implements Generator {
         if (comment != null && comment.length() > 0) {
             fieldBuilder.addJavadoc(comment);
         }
-        if (!Config.pojoConfig().isDataAnnotation()) {
+        if (!Director.pojoDirector().isDataAnnotation()) {
             fieldBuilder.addAnnotation(lombok(LombokAnnotation.GETTER, LOMBOK_PACKAGE));
-            if (!Config.pojoConfig().isChainMode()) {
+            if (!Director.pojoDirector().isChainMode()) {
                 fieldBuilder.addAnnotation(lombok(LombokAnnotation.SETTER, LOMBOK_PACKAGE));
             }
-            if (Config.pojoConfig().getNonNull() != null) {
-                Arrays.asList(Config.pojoConfig().getNonNull()).forEach(field -> {
+            if (Director.pojoDirector().getNonNull() != null) {
+                Arrays.asList(Director.pojoDirector().getNonNull()).forEach(field -> {
                     if (field.equals(pojoField)) {
                         fieldBuilder.addAnnotation(lombok(LombokAnnotation.NON_NULL, LOMBOK_PACKAGE));
                     }
@@ -137,33 +138,26 @@ class PojoGenerator implements Generator {
 
     /**
      * 生成
+     *
+     * @param pojoName pojo名称
+     * @param tds      表结构描述
      */
     @Override
-    public void generate() {
-        Arrays.asList(Config.tables()).forEach(name -> {
-            try {
-                String letterPojoName = StringUtils.lineToHump(name);
-                String upperPojoName = StringUtils.firstLetterToUpperCase(letterPojoName);
-                TypeSpec.Builder pojoBuilder = typeSpecBuilder(upperPojoName);
-                List<TableDesc> tds = JdbcDriver.newDriver().desc(name);
-                tds.forEach(td ->
-                        parseType(td.getType()).ifPresent(type -> {
-                            // 字段名称
-                            String pojoField = StringUtils.lineToHump(td.getField());
-                            FieldSpec.Builder fieldBuilder = fieldSpecBuilder(type, pojoField, td.getComment());
-                            pojoBuilder.addField(fieldBuilder.build());
-                            if (Config.pojoConfig().isChainMode() && !Config.pojoConfig().isDataAnnotation()) {
-                                String methodName = "set" + StringUtils.firstLetterToUpperCase(pojoField);
-                                MethodSpec.Builder setterBuilder = methodSpecBuilder(upperPojoName, methodName, type, pojoField);
-                                pojoBuilder.addMethod(setterBuilder.build());
-                            }
-                        })
-                );
-                JavaFile javaFile = JavaFile.builder(Config.pojoConfig().getPackageName(), pojoBuilder.build()).build();
-                javaFile.writeTo(Paths.get(Config.targetPath()));
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
+    public TypeSpec generate(String pojoName, List<TableDesc> tds) {
+        TypeSpec.Builder pojoBuilder = classSpecBuilder(pojoName);
+        tds.forEach(td -> {
+            parseType(td.getType()).ifPresent(type -> {
+                // 字段名称
+                String pojoField = StringUtils.lineToHump(td.getField());
+                FieldSpec.Builder fieldBuilder = fieldSpecBuilder(type, pojoField, td.getComment());
+                pojoBuilder.addField(fieldBuilder.build());
+                if (Director.pojoDirector().isChainMode() && !Director.pojoDirector().isDataAnnotation()) {
+                    String methodName = "set" + StringUtils.firstLetterToUpperCase(pojoField);
+                    MethodSpec.Builder setterBuilder = methodSpecBuilder(pojoName, methodName, type, pojoField);
+                    pojoBuilder.addMethod(setterBuilder.build());
+                }
+            });
         });
+        return pojoBuilder.build();
     }
 }

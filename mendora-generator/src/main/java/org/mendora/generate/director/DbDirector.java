@@ -1,4 +1,4 @@
-package org.mendora.generate.config;
+package org.mendora.generate.director;
 
 import lombok.Data;
 
@@ -9,7 +9,7 @@ import lombok.Data;
  * desc: 数据库配置信息
  */
 @Data
-public class DbConfig {
+public class DbDirector {
     /**
      * 账户
      */

@@ -1,8 +1,8 @@
 package org.mendora.generate.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.generate.config.Config;
-import org.mendora.generate.config.DbConfig;
+import org.mendora.generate.director.Director;
+import org.mendora.generate.director.DbDirector;
 import org.mendora.generate.util.BeanUtils;
 import org.mendora.generate.util.FieldMapper;
 import org.mendora.generate.util.StringUtils;
@@ -38,7 +38,7 @@ public class JdbcDriver {
      * 驱动资源初始化
      */
     private JdbcDriver() {
-        DbConfig dbConfig = Config.dbConfig();
+        DbDirector dbConfig = Director.dbDirector();
         try {
             Class.forName(dbConfig.getDriverClass());
             conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUser(), dbConfig.getPassword());

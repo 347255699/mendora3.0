@@ -17,7 +17,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * showFullColumns:
+ * desc:
  */
 @Slf4j
 public class MainGenerator {

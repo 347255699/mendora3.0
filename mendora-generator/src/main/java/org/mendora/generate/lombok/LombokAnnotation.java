@@ -4,7 +4,7 @@ package org.mendora.generate.lombok;
  * @author menfre
  * @version 1.0
  * date: 2018/9/27
- * showFullColumns: Lombok注解名称
+ * desc: Lombok注解名称
  */
 public interface LombokAnnotation {
     String GETTER = "Getter";

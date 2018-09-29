@@ -12,7 +12,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/28
- * showFullColumns:
+ * desc:
  */
 public interface Generator {
     String LOMBOK_PACKAGE = "lombok";

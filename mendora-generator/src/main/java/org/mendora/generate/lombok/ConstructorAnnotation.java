@@ -7,7 +7,7 @@ import java.util.Optional;
  * @author menfre
  * @version 1.0
  * date: 2018/9/27
- * showFullColumns: 构造器注解
+ * desc: 构造器注解
  */
 public enum ConstructorAnnotation {
     /**

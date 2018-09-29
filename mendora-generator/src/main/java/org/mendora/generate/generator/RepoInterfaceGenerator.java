@@ -15,7 +15,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/28
- * showFullColumns:
+ * desc:
  */
 @Slf4j
 class RepoInterfaceGenerator implements Generator {

@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * showFullColumns: 全局配置
+ * desc: 全局配置
  */
 @Slf4j
 public class Director {

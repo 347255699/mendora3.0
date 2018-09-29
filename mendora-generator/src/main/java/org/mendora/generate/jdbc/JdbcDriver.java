@@ -22,7 +22,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * showFullColumns: jdbc驱动
+ * desc: jdbc驱动
  */
 @Slf4j
 public class JdbcDriver {

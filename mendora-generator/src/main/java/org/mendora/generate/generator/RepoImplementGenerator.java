@@ -18,7 +18,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/29
- * showFullColumns:
+ * desc:
  */
 @Slf4j
 public class RepoImplementGenerator implements Generator {

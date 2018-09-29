@@ -9,7 +9,7 @@ import java.util.Optional;
  * @author menfre
  * date: 2018/9/29
  * version: 1.0
- * showFullColumns:
+ * desc:
  */
 public enum PrimaryKeyType {
     INTEGER("Integer", TypeName.INT.box()),

@@ -22,7 +22,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc: jdbc驱动
+ * showFullColumns: jdbc驱动
  */
 @Slf4j
 public class JdbcDriver {
@@ -64,13 +64,13 @@ public class JdbcDriver {
     }
 
     /**
-     * desc操作
+     * 查询表字段信息
      *
      * @param tableName 表格名称
      * @return 表结构描述集合
      * @throws Exception
      */
-    public List<TableDesc> desc(String tableName) throws Exception {
+    public List<TableDesc> showFullColumns(String tableName) throws Exception {
         ResultSet rs = query("show full columns from " + tableName);
         return parse(TableDesc.class, rs, field -> {
             if (field.endsWith(SUFFIX_VAL)) {

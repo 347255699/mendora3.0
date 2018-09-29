@@ -1,14 +1,21 @@
 {
   "db": {
     "driverClass": "com.mysql.cj.jdbc.Driver",
-    "user": "root",
-    "password": "wokoworks002",
-    "url": "jdbc:mysql://localhost:3306/pos_merchant?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
+    "user": "menfre",
+    "password": "Menfre123!@#",
+    "url": "jdbc:mysql://123.207.55.60:3306/mendora?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
   "tables": [
-    "platform_user"
+    "access",
+    "access_token",
+    "action",
+    "attachment",
+    "collaboration",
+    "comment",
+    "deploy_key",
+    "webhook"
   ],
-  "targetPath": "/Users/pundix043/workbench/mendora/generate",
+  "targetPath": "H:\\workbench\\mendora\\mendora3.0\\generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
     // noArgs, allArgs
@@ -22,7 +29,8 @@
   },
   "repo": {
     "packageName": "org.mendora.repository",
-    "primaryKeyType": "java.lang.Integer",
+    // Integer, String
+    "primaryKeyType": "Integer",
     "superRepoPackage": "org.mendora.jdbc.repository",
     "interfaceDirector": {
       "superInterface": "BaseRepository"

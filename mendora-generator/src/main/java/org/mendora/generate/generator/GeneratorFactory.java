@@ -4,7 +4,7 @@ package org.mendora.generate.generator;
  * @author menfre
  * @version 1.0
  * date: 2018/9/28
- * desc:
+ * showFullColumns:
  */
 public class GeneratorFactory {
 

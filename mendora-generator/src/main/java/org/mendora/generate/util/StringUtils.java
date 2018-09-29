@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
  * @author menfre
  * @version 1.0
  * date: 2018/9/27
- * desc: 字符串工具
+ * showFullColumns: 字符串工具
  */
 public class StringUtils {
     private static Pattern linePattern = Pattern.compile("_(\\w)");

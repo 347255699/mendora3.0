@@ -6,7 +6,7 @@ import lombok.Data;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc: 数据库配置信息
+ * showFullColumns: 数据库配置信息
  */
 @Data
 public class DbDirector {

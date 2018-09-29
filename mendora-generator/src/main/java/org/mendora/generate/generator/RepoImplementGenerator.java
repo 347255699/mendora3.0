@@ -9,6 +9,7 @@ import org.mendora.generate.director.PojoDirector;
 import org.mendora.generate.director.RepoDirector;
 import org.mendora.generate.jdbc.TableDesc;
 import org.mendora.generate.lombok.LombokAnnotation;
+import org.mendora.generate.lombok.PrimaryKeyType;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;
@@ -17,7 +18,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/29
- * desc:
+ * showFullColumns:
  */
 @Slf4j
 public class RepoImplementGenerator implements Generator {
@@ -37,25 +38,20 @@ public class RepoImplementGenerator implements Generator {
     private TypeSpec.Builder implementTypeSpecBuilder(String pojoName) {
         RepoDirector repoDirector = Director.repoDirector();
         PojoDirector pojoDirector = Director.pojoDirector();
-        ParameterizedTypeName repoClass = null;
-        try {
-            repoClass = ParameterizedTypeName.get(
-                    ClassName.get(repoDirector.getSuperRepoPackage() + ".impl", repoDirector.getImplementDirector().getSuperClass()),
-                    ClassName.get(Class.forName(repoDirector.getPrimaryKeyType())),
-                    ClassName.get(pojoDirector.getPackageName(), pojoName)
-            );
-        } catch (ClassNotFoundException e) {
-            log.error(e.getMessage(), e);
-        }
         TypeSpec.Builder repoImplBuilder = TypeSpec.classBuilder(pojoName + "RepositoryImpl")
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ClassName.get(repoDirector.getPackageName(), pojoName + "Repository"));
         if (Director.repoDirector().getImplementDirector().isSlf4jAnnotation()) {
             repoImplBuilder.addAnnotation(lombok(LombokAnnotation.SLF4J, LOMBOK_EXTERN_SLF4J_PACKAGE));
         }
-        if (repoClass != null) {
+        PrimaryKeyType.valOf(repoDirector.getPrimaryKeyType()).ifPresent(pkt -> {
+            ParameterizedTypeName repoClass = ParameterizedTypeName.get(
+                    ClassName.get(repoDirector.getSuperRepoPackage() + ".impl", repoDirector.getImplementDirector().getSuperClass()),
+                    pkt.typeName,
+                    ClassName.get(pojoDirector.getPackageName(), pojoName)
+            );
             repoImplBuilder.superclass(repoClass);
-        }
+        });
         return repoImplBuilder;
     }
 }

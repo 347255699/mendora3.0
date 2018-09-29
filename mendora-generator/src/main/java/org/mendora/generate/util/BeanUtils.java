@@ -11,7 +11,7 @@ import java.util.Arrays;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc:
+ * showFullColumns:
  */
 @Slf4j
 public class BeanUtils {

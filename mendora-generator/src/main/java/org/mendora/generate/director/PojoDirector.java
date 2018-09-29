@@ -6,7 +6,7 @@ import lombok.Data;
  * @author menfre
  * @version 1.0
  * date: 2018/9/27
- * desc:
+ * showFullColumns:
  */
 @Data
 public class PojoDirector {

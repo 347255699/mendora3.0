@@ -17,7 +17,7 @@ import java.util.List;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc:
+ * showFullColumns:
  */
 @Slf4j
 public class MainGenerator {
@@ -37,7 +37,7 @@ public class MainGenerator {
         Arrays.asList(Director.tables()).forEach(tableName -> {
             String pojoName = StringUtils.firstLetterToUpperCase(StringUtils.lineToHump(tableName));
             try {
-                List<TableDesc> tds = JdbcDriver.newDriver().desc(tableName);
+                List<TableDesc> tds = JdbcDriver.newDriver().showFullColumns(tableName);
 
                 // 生成pojo
                 TypeSpec pojoTypeSpec = generatePojo(pojoName, tds);

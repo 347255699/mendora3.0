@@ -4,7 +4,7 @@ package org.mendora.generate.util;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc: POJO字段映射器
+ * showFullColumns: POJO字段映射器
  */
 @FunctionalInterface
 public interface FieldMapper {

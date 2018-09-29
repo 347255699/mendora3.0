@@ -13,7 +13,7 @@ import java.nio.ByteBuffer;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc: 全局配置
+ * showFullColumns: 全局配置
  */
 @Slf4j
 public class Director {
@@ -48,16 +48,16 @@ public class Director {
              * 打开配置文件通道
              */
             RandomAccessFile aFile = new RandomAccessFile(PathUtils.root() + DIRECTOR_FILE_PATH, "r");
-            final ByteBuffer buf = ByteBuffer.allocate(1024);
-            final byte[] bytes = new byte[1024];
+            final ByteBuffer buf = ByteBuffer.allocate(2048);
             StringBuilder jsonStr = new StringBuilder();
             int read = aFile.getChannel().read(buf);
             while (read != -1) {
+                final byte[] bytes = new byte[2048];
                 buf.flip();
                 buf.get(bytes, 0, buf.limit());
-                jsonStr.append(new String(bytes));
                 buf.compact();
                 read = aFile.getChannel().read(buf);
+                jsonStr.append(new String(bytes));
             }
             // Str -> JsonObject
             JSONObject director = JSON.parseObject(jsonStr.toString());

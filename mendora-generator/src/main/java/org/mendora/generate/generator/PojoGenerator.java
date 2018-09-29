@@ -18,7 +18,7 @@ import java.util.Optional;
  * @author menfre
  * @version 1.0
  * date: 2018/9/26
- * desc: Pojo生成器
+ * showFullColumns: Pojo生成器
  */
 @Slf4j
 class PojoGenerator implements Generator {

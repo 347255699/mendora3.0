@@ -39,6 +39,7 @@ public class RepoImplementGenerator implements Generator {
         RepoDirector repoDirector = Director.repoDirector();
         PojoDirector pojoDirector = Director.pojoDirector();
         TypeSpec.Builder repoImplBuilder = TypeSpec.classBuilder(pojoName + "RepositoryImpl")
+                .addJavadoc("@author generate from mendora-generator")
                 .addModifiers(Modifier.PUBLIC)
                 .addSuperinterface(ClassName.get(repoDirector.getPackageName(), pojoName + "Repository"));
         if (Director.repoDirector().getImplementDirector().isSlf4jAnnotation()) {

@@ -1,4 +1,4 @@
-package org.mendora.generate.lombok;
+package org.mendora.generate.util;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeName;

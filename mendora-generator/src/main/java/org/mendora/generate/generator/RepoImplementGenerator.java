@@ -9,7 +9,7 @@ import org.mendora.generate.director.PojoDirector;
 import org.mendora.generate.director.RepoDirector;
 import org.mendora.generate.jdbc.TableDesc;
 import org.mendora.generate.lombok.LombokAnnotation;
-import org.mendora.generate.lombok.PrimaryKeyType;
+import org.mendora.generate.util.PrimaryKeyType;
 
 import javax.lang.model.element.Modifier;
 import java.util.List;

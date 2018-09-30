@@ -5,15 +5,16 @@
     "password": "wokoworks002",
     "url": "jdbc:mysql://localhost:3306/pos_merchant?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
-  "tables": [
-    "platform_user"
+  "tableStartWithTag":"platform",
+  "ignoreTable":[
+    "platform_account",
+    "platform_account_currency_type"
   ],
   "targetPath": "/Users/pundix043/workbench/mendora/generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
     // noArgs, allArgs
     "constructor": [
-      "allArgs",
       "noArgs"
     ],
     "dataAnnotation": true,

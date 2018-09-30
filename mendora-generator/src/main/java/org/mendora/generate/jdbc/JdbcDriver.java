@@ -84,6 +84,31 @@ public class JdbcDriver {
     }
 
     /**
+     * 查询表名称集合
+     *
+     * @return 表名称集合
+     * @throws Exception
+     */
+    public List<String> showTables() throws Exception {
+        ResultSet rs = query("show tables");
+        List<String> tableNames = new ArrayList<>();
+        while (rs.next()) {
+            if (rs.getString(1).startsWith(Director.tableStartWithTag())) {
+                boolean ignoreFlag = false;
+                for (String ignore : Director.ignoreTag()) {
+                    if (ignore.equals(rs.getString(1))) {
+                        ignoreFlag = true;
+                    }
+                }
+                if (!ignoreFlag) {
+                    tableNames.add(rs.getString(1));
+                }
+            }
+        }
+        return tableNames;
+    }
+
+    /**
      * 解析结果集 ResultSet -> Pojo
      *
      * @param clazz  pojo对象

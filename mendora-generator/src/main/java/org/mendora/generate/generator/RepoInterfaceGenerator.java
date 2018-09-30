@@ -26,8 +26,8 @@ class RepoInterfaceGenerator implements Generator {
         RepoDirector repoDirector = Director.repoDirector();
         PojoDirector pojoDirector = Director.pojoDirector();
         TypeSpec.Builder repoInterfaceBuilder = TypeSpec.interfaceBuilder(pojoName + "Repository")
-                .addJavadoc("@author generate from mendora-generator")
                 .addModifiers(Modifier.PUBLIC);
+        addGenerateComment(repoInterfaceBuilder);
         PrimaryKeyType.valOf(repoDirector.getPrimaryKeyType()).ifPresent(pkt -> {
             ParameterizedTypeName repoInterface = ParameterizedTypeName.get(
                     ClassName.get(repoDirector.getSuperRepoPackage(), repoDirector.getInterfaceDirector().getSuperInterface()),

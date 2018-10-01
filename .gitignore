@@ -4,4 +4,4 @@
 *.iml
 generator/*
 generate/*
-*/src/main/resources/*
+mendora-generator/src/main/resources/*

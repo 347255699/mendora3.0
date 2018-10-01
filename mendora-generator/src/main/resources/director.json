@@ -1,16 +1,14 @@
 {
   "db": {
     "driverClass": "com.mysql.cj.jdbc.Driver",
-    "user": "root",
-    "password": "wokoworks002",
-    "url": "jdbc:mysql://localhost:3306/pos_merchant?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
+    "user": "menfre",
+    "password": "Menfre123!@#",
+    "url": "jdbc:mysql://123.207.55.60:3306/mendora?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
-  "tableStartWithTag":"platform",
+  "tableStartWithTag":"access",
   "ignoreTable":[
-    "platform_account",
-    "platform_account_currency_type"
   ],
-  "targetPath": "/Users/pundix043/workbench/mendora/generate",
+  "targetPath": "D:\\idea_project\\mendora3.0\\generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
     // noArgs, allArgs

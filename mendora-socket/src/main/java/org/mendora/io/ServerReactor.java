@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.spi.SelectorProvider;
 
 /**
  * @author menfre
@@ -19,6 +21,7 @@ public class ServerReactor {
      */
     private int port;
     private ServerSocketChannel ssc;
+    private Selector acceptor;
 
     private ServerReactor(int port){
         this.port = port;
@@ -26,6 +29,8 @@ public class ServerReactor {
             ssc = ServerSocketChannel.open();
             ssc.socket().bind(new InetSocketAddress(port));
             ssc.configureBlocking(false);
+            acceptor = SelectorProvider.provider().openSelector();
+            ssc.accept();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

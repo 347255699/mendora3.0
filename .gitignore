@@ -3,4 +3,4 @@
 */target
 *.iml
 generate
-*/src/main/resources
+#*/src/main/resources

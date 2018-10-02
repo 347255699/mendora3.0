@@ -12,6 +12,7 @@
         <module>mendora-socket</module>
         <module>mendora-generator</module>
         <module>mendora-jdbc</module>
+        <module>mendora-course</module>
     </modules>
     <properties>
         <slf4j.version>1.7.25</slf4j.version>

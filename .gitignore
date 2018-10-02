@@ -1,7 +1,6 @@
-.idea/*
-*/src/test/*
+.idea
+*/src/test
 */target
 *.iml
-generator/*
-generate/*
-mendora-generator/src/main/resources/*
+generate
+*/src/main/resources

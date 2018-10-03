@@ -1,4 +1,4 @@
-package org.mendora.io.loop;
+package org.mendora.io.selection;
 
 import lombok.Builder;
 import lombok.ToString;
@@ -15,7 +15,6 @@ import java.nio.ByteBuffer;
 @Builder
 @ToString
 public class SelectionEvent {
-
     private InetSocketAddress remoteAddress;
     private ByteBuffer readBuf;
     private SelectionEventType selectionEventType;

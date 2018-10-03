@@ -1,6 +1,4 @@
-package org.mendora.io.handler;
-
-import org.mendora.io.loop.SelectionEvent;
+package org.mendora.io.selection;
 
 /**
  * @author menfre

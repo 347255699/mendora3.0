@@ -1,4 +1,4 @@
-package org.mendora.io.loop;
+package org.mendora.io.selection;
 
 import java.nio.channels.SelectionKey;
 import java.util.Optional;

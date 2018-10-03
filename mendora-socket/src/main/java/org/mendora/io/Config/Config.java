@@ -7,4 +7,5 @@ package org.mendora.io.Config;
  * desc:
  */
 public class Config {
+    public static int READ_BUFFER_SIZE = 1024;
 }

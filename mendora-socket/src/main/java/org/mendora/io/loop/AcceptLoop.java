@@ -1,7 +1,7 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.selection.SelectionEventContext;
+import org.mendora.io.selection.*;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,14 +20,18 @@ import java.nio.channels.SocketChannel;
 public class AcceptLoop extends AbstractLoop {
     private Selector reader;
     private boolean isReaderOpen = false;
+    private SelectionAcceptHandler acceptHandler;
+    private SelectionReadHandler readHandler;
 
-    public static AcceptLoop newAcceptLoop(Selector acceptor, Selector reader) {
-        return new AcceptLoop(acceptor, reader);
+    public static AcceptLoop newAcceptLoop(Selector acceptor, Selector reader, SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) {
+        return new AcceptLoop(acceptor, reader, acceptHandler, readHandler);
     }
 
-    protected AcceptLoop(Selector acceptor, Selector reader) {
+    protected AcceptLoop(Selector acceptor, Selector reader, SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) {
         super(acceptor);
         this.reader = reader;
+        this.acceptHandler = acceptHandler;
+        this.readHandler = readHandler;
     }
 
     @Override
@@ -38,11 +42,12 @@ public class AcceptLoop extends AbstractLoop {
                 SocketChannel acceptChannel = ssc.accept();
                 acceptChannel.configureBlocking(false);
                 InetSocketAddress remoteAddress = (InetSocketAddress) acceptChannel.getRemoteAddress();
-                log.info("channel created. from: {}", remoteAddress);
                 SelectionEventContext skc = new SelectionEventContext(remoteAddress);
                 acceptChannel.register(reader, SelectionKey.OP_READ, skc);
+                SelectionEventType.valOf(SelectionKey.OP_ACCEPT).ifPresent(selectionEventType ->
+                        acceptHandler.handle(new SelectionEvent(remoteAddress, null, selectionEventType)));
                 if (!isReaderOpen) {
-                    ReadLoop.newReadLoop(reader).start();
+                    ReadLoop.newReadLoop(reader, readHandler).start();
                     isReaderOpen = true;
                 } else {
                     reader.wakeup();

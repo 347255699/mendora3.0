@@ -1,7 +1,7 @@
 package org.mendora.io.selection;
 
-import lombok.Builder;
-import lombok.ToString;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -12,8 +12,8 @@ import java.nio.ByteBuffer;
  * date: 2018/10/3
  * desc:
  */
-@Builder
-@ToString
+@Data
+@AllArgsConstructor
 public class SelectionEvent {
     private InetSocketAddress remoteAddress;
     private ByteBuffer readBuf;

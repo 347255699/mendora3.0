@@ -2,6 +2,8 @@ package org.mendora.io;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mendora.io.loop.AcceptLoop;
+import org.mendora.io.selection.SelectionAcceptHandler;
+import org.mendora.io.selection.SelectionReadHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -43,9 +45,9 @@ public class ServerReactor {
         return new ServerReactor(port);
     }
 
-    public void open() throws Exception {
+    public void open(SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) throws Exception {
         ssc.register(acceptor, SelectionKey.OP_ACCEPT);
-        AcceptLoop.newAcceptLoop(acceptor, reader).start();
+        AcceptLoop.newAcceptLoop(acceptor, reader, acceptHandler, readHandler).start();
     }
 
 }

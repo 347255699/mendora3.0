@@ -8,5 +8,5 @@ package org.mendora.io.selection;
  */
 @FunctionalInterface
 public interface SelectionReadHandler {
-    boolean handle(SelectionEvent se);
+    boolean handle(SelectionEventContext selectionEventContext);
 }

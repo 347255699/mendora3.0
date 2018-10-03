@@ -1,10 +1,8 @@
 package org.mendora.io.loop;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.io.selection.SelectionEvent;
 import org.mendora.io.selection.SelectionEventContext;
 import org.mendora.io.selection.SelectionReadHandler;
-import org.mendora.io.selection.SelectionEventType;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -40,13 +38,16 @@ public class ReadLoop extends AbstractLoop {
             try {
                 int byteNum = clientChannel.read(readBuf);
                 if (byteNum > 0) {
-                    SelectionEventType.valOf(SelectionKey.OP_READ).ifPresent(selectionEventType -> {
-                        readBuf.flip();
-                        readBuf.mark();
-                        if (!readHandler.handle(new SelectionEvent(skc.getRemoteAddress(), readBuf, selectionEventType))) {
-                            readBuf.reset();
+                    readBuf.flip();
+                    readBuf.mark();
+                    if (!readHandler.handle(skc)) {
+                        readBuf.reset();
+                    }
+                    if (skc.getWriteQueue().isEmpty()) {
+                        if (!skc.isKeepLive()) {
+                            cancel(selectionKey);
                         }
-                    });
+                    }
                     readBuf.compact();
                 } else if (byteNum == -1) {
                     cancel(selectionKey);

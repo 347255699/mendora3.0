@@ -7,6 +7,7 @@ import org.mendora.io.Config.Config;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * @author menfre
@@ -21,4 +22,19 @@ public class SelectionEventContext {
     @NonNull
     @Getter
     private InetSocketAddress remoteAddress;
+    @Getter
+    private ConcurrentLinkedQueue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
+
+    @Getter
+    private boolean keepLive = false;
+
+    public void write(ByteBuffer writeBuf) {
+        writeQueue.add(writeBuf);
+    }
+
+    public void close() {
+        if (isKeepLive()) {
+            keepLive = false;
+        }
+    }
 }

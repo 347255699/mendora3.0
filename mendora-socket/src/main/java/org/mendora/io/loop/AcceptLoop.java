@@ -44,8 +44,7 @@ public class AcceptLoop extends AbstractLoop {
                 InetSocketAddress remoteAddress = (InetSocketAddress) acceptChannel.getRemoteAddress();
                 SelectionEventContext skc = new SelectionEventContext(remoteAddress);
                 acceptChannel.register(reader, SelectionKey.OP_READ, skc);
-                SelectionEventType.valOf(SelectionKey.OP_ACCEPT).ifPresent(selectionEventType ->
-                        acceptHandler.handle(new SelectionEvent(remoteAddress, null, selectionEventType)));
+                acceptHandler.handle(skc);
                 if (!isReaderOpen) {
                     ReadLoop.newReadLoop(reader, readHandler).start();
                     isReaderOpen = true;

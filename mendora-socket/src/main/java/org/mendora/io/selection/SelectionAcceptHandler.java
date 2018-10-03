@@ -8,5 +8,5 @@ package org.mendora.io.selection;
  */
 @FunctionalInterface
 public interface SelectionAcceptHandler {
-    void handle(SelectionEvent selectionEvent);
+    void handle(SelectionEventContext selectionEventContext);
 }

@@ -26,15 +26,19 @@ public class SelectionEventContext {
     private ConcurrentLinkedQueue<ByteBuffer> writeQueue = new ConcurrentLinkedQueue<>();
 
     @Getter
-    private boolean keepLive = false;
+    private boolean keepAlive = false;
 
     public void write(ByteBuffer writeBuf) {
         writeQueue.add(writeBuf);
     }
 
     public void close() {
-        if (isKeepLive()) {
-            keepLive = false;
+        if (isKeepAlive()) {
+            keepAlive = false;
         }
+    }
+
+    public void keepAlive(){
+        keepAlive = true;
     }
 }

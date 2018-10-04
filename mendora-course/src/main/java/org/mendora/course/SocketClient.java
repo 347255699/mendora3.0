@@ -1,11 +1,8 @@
 package org.mendora.course;
 
+import io.vertx.core.Vertx;
+import io.vertx.core.net.NetSocket;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
 
 /**
  * @author menfre
@@ -16,24 +13,17 @@ import java.nio.channels.SocketChannel;
 @Slf4j
 public class SocketClient {
     public static void main(String[] args) {
-        try {
-            SocketChannel sc = SocketChannel.open();
-            sc.connect(new InetSocketAddress("localhost", 8080));
-            if (sc.finishConnect()) {
-                String msg = "hello";
-                final ByteBuffer writeBuf = ByteBuffer.allocate(msg.getBytes().length);
-                while (true) {
-                    writeBuf.put(msg.getBytes());
-                    writeBuf.flip();
-                    sc.write(writeBuf);
-                    Thread.currentThread().sleep(3000);
-                    writeBuf.clear();
-                }
+        Vertx vertx = Vertx.vertx();
+        vertx.createNetClient().connect(8080, "localhost", asc -> {
+            if (asc.succeeded()) {
+                NetSocket socket = asc.result();
+                socket.handler(buf -> {
+                    log.info(buf.toString());
+                });
+                vertx.setPeriodic(3000, l -> {
+                    socket.write("hello");
+                });
             }
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        } catch (InterruptedException e) {
-            log.error(e.getMessage(), e);
-        }
+        });
     }
 }

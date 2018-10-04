@@ -68,7 +68,9 @@ public abstract class AbstractLoop extends Thread {
 
     protected void cancel(SelectionKey selectionKey) {
         try {
-            selectionKey.channel().close();
+            if (selectionKey.channel().isOpen()) {
+                selectionKey.channel().close();
+            }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }

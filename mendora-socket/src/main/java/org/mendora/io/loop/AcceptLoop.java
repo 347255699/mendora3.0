@@ -18,20 +18,20 @@ import java.nio.channels.SocketChannel;
  */
 @Slf4j
 public class AcceptLoop extends AbstractLoop {
-    private Selector reader;
     private boolean isReaderOpen = false;
     private SelectionAcceptHandler acceptHandler;
     private SelectionReadHandler readHandler;
+    private LoopSelectorProvider selectorProvider;
 
-    public static AcceptLoop newAcceptLoop(Selector acceptor, Selector reader, SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) {
-        return new AcceptLoop(acceptor, reader, acceptHandler, readHandler);
+    public static AcceptLoop newAcceptLoop(LoopSelectorProvider selectorProvider, SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) {
+        return new AcceptLoop(selectorProvider, acceptHandler, readHandler);
     }
 
-    protected AcceptLoop(Selector acceptor, Selector reader, SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) {
-        super(acceptor);
-        this.reader = reader;
+    protected AcceptLoop(LoopSelectorProvider selectorProvider, SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) {
+        super(selectorProvider.acceptor());
         this.acceptHandler = acceptHandler;
         this.readHandler = readHandler;
+        this.selectorProvider = selectorProvider;
     }
 
     @Override
@@ -43,13 +43,13 @@ public class AcceptLoop extends AbstractLoop {
                 acceptChannel.configureBlocking(false);
                 InetSocketAddress remoteAddress = (InetSocketAddress) acceptChannel.getRemoteAddress();
                 SelectionEventContext skc = new SelectionEventContext(remoteAddress);
-                acceptChannel.register(reader, SelectionKey.OP_READ, skc);
+                acceptChannel.register(selectorProvider.reader(), SelectionKey.OP_READ, skc);
                 acceptHandler.handle(skc);
                 if (!isReaderOpen) {
-                    ReadLoop.newReadLoop(reader, readHandler).start();
+                    ReadLoop.newReadLoop(selectorProvider, readHandler).start();
                     isReaderOpen = true;
                 } else {
-                    reader.wakeup();
+                    selectorProvider.reader().wakeup();
                 }
             } catch (IOException e) {
                 log.error(e.getMessage(), e);

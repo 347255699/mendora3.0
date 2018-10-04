@@ -2,15 +2,14 @@ package org.mendora.io;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mendora.io.loop.AcceptLoop;
+import org.mendora.io.loop.LoopSelectorProvider;
 import org.mendora.io.selection.SelectionAcceptHandler;
 import org.mendora.io.selection.SelectionReadHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.spi.SelectorProvider;
 
 /**
  * @author menfre
@@ -23,19 +22,14 @@ public class ServerReactor {
     /**
      * 监听端口号
      */
-    private int port;
     private ServerSocketChannel ssc;
-    private Selector acceptor;
-    private Selector reader;
-
+    private LoopSelectorProvider selectorProvider;
     private ServerReactor(int port) {
-        this.port = port;
         try {
             ssc = ServerSocketChannel.open();
             ssc.socket().bind(new InetSocketAddress(port));
             ssc.configureBlocking(false);
-            acceptor = SelectorProvider.provider().openSelector();
-            reader = SelectorProvider.provider().openSelector();
+            selectorProvider = LoopSelectorProvider.newLoopSelectorProvider();
         } catch (IOException e) {
             log.error(e.getMessage(), e);
         }
@@ -46,8 +40,8 @@ public class ServerReactor {
     }
 
     public void open(SelectionAcceptHandler acceptHandler, SelectionReadHandler readHandler) throws Exception {
-        ssc.register(acceptor, SelectionKey.OP_ACCEPT);
-        AcceptLoop.newAcceptLoop(acceptor, reader, acceptHandler, readHandler).start();
+        ssc.register(selectorProvider.acceptor(), SelectionKey.OP_ACCEPT);
+        AcceptLoop.newAcceptLoop(selectorProvider, acceptHandler, readHandler).start();
     }
 
 }

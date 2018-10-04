@@ -23,6 +23,11 @@ public class ApplicationMain {
                 final byte[] bytes = new byte[1024];
                 readBuf.get(bytes, 0, readBuf.limit());
                 log.info(new String(bytes));
+                String respMsg = "hi, i'am menfre.";
+                final ByteBuffer writeBuf = ByteBuffer.allocate(respMsg.getBytes().length);
+                writeBuf.put(respMsg.getBytes());
+                se.write(writeBuf);
+                se.keepAlive();
                 return true;
             });
         } catch (Exception e) {

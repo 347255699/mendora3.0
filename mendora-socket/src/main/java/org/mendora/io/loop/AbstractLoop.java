@@ -12,7 +12,7 @@ import java.util.Set;
  * @author menfre
  * @version 1.0
  * date: 2018/9/21
- * desc: 抽象循环器
+ * desc: 抽象监听器
  */
 @Slf4j
 public abstract class AbstractLoop extends Thread {

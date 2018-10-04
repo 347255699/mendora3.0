@@ -33,13 +33,13 @@ public class WriteLoop extends AbstractLoop {
             final SelectionEventContext ctx = (SelectionEventContext) selectionKey.attachment();
             final Queue<ByteBuffer> queue = ctx.getWriteQueue();
             final SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-            // d待写出消息队列是否为空
+            // 待写出消息队列是否为空
             while (!queue.isEmpty()) {
                 final ByteBuffer buf = queue.peek();
                 // 切换为读模式
                 buf.flip();
-                // 写出消息
                 try {
+                    // 写出消息
                     socketChannel.write(buf);
                 } catch (IOException e) {
                     log.error(e.getMessage(), e);

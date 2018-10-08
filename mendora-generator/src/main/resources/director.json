@@ -5,22 +5,14 @@
     "password": "Menfre123!@#",
     "url": "jdbc:mysql://123.207.55.60:3306/mendora?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
-  "tables": [
-    "access",
-    "access_token",
-    "action",
-    "attachment",
-    "collaboration",
-    "comment",
-    "deploy_key",
-    "webhook"
+  "tableStartWithTag":"access",
+  "ignoreTable":[
   ],
-  "targetPath": "H:\\workbench\\mendora\\mendora3.0\\generate",
+  "targetPath": "D:\\idea_project\\mendora3.0\\generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
     // noArgs, allArgs
     "constructor": [
-      "allArgs",
       "noArgs"
     ],
     "dataAnnotation": true,

@@ -1,7 +1,5 @@
-.idea/*
-*/src/test/*
+.idea
+*/src/test
 */target
 *.iml
-generator/*
-generate/*
-*/src/main/resources/*
+generate

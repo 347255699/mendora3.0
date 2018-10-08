@@ -5,6 +5,7 @@ import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import org.mendora.generate.jdbc.TableDesc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -37,5 +38,18 @@ public interface Generator {
     default AnnotationSpec lombok(String name, String packageName) {
         return AnnotationSpec.builder(ClassName.get(packageName, name))
                 .build();
+    }
+
+    /**
+     * 添加注释
+     *
+     * @param typeSpecBuilder
+     */
+    default void addGenerateComment(TypeSpec.Builder typeSpecBuilder) {
+        typeSpecBuilder
+                .addJavadoc("@author generate from mendora-generator\n")
+                .addJavadoc("@version 1.0\n")
+                .addJavadoc("date: " + LocalDateTime.now() + "\n")
+                .addJavadoc("desc:");
     }
 }

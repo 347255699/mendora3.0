@@ -111,8 +111,8 @@ class PojoGenerator implements Generator {
      */
     @Override
     public TypeSpec generate(String pojoName, List<TableDesc> tds) {
-        TypeSpec.Builder pojoBuilder = classSpecBuilder(pojoName)
-                .addJavadoc("@author generate from mendora-generator");
+        TypeSpec.Builder pojoBuilder = classSpecBuilder(pojoName);
+        addGenerateComment(pojoBuilder);
         tds.forEach(td ->
                 parseType(td.getType()).ifPresent(type -> {
                     // 字段名称

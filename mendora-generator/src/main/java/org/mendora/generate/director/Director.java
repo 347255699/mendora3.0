@@ -1,6 +1,5 @@
 package org.mendora.generate.director;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.Data;
 import org.mendora.generate.jdbc.DbSourcesProvider;

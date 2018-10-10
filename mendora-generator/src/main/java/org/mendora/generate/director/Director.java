@@ -24,7 +24,7 @@ public class Director {
     /**
      * 表标志
      */
-    private static String TABLE_START_WITH_TAG;
+    private static String[] TABLE_START_WITH_TAG;
     /**
      * 生成的目标路径,文件夹
      */
@@ -41,10 +41,6 @@ public class Director {
      * 配置文件路径
      */
     private static final String DIRECTOR_FILE_PATH = "director.json";
-    /**
-     * 需要忽略的表
-     */
-    private static String[] IGNORE_TABLE;
 
     static {
         try {
@@ -69,11 +65,9 @@ public class Director {
             // 解析指导信息
             JSONObject db = director.getJSONObject("db");
             DB_DIRECTOR = JSON.toJavaObject(db, DbDirector.class);
-            TABLE_START_WITH_TAG = director.getString("tableStartWithTag");
+            TABLE_START_WITH_TAG = (String[]) director.getJSONArray("tableStartWithTag").toArray();
             TARGET_PATH = director.getString("targetPath");
             JSONArray ignoreTable = director.getJSONArray("ignoreTable");
-            IGNORE_TABLE = new String[ignoreTable.size()];
-            ignoreTable.toArray(IGNORE_TABLE);
             POJO_DIRECTOR = JSON.toJavaObject(director.getJSONObject("pojo"), PojoDirector.class);
             REPO_DIRECTOR = JSON.toJavaObject(director.getJSONObject("repo"), RepoDirector.class);
         } catch (Exception e) {
@@ -85,7 +79,7 @@ public class Director {
         return DB_DIRECTOR;
     }
 
-    public static String tableStartWithTag() {
+    public static String[] tableStartWithTag() {
         return TABLE_START_WITH_TAG;
     }
 
@@ -99,9 +93,5 @@ public class Director {
 
     public static RepoDirector repoDirector() {
         return REPO_DIRECTOR;
-    }
-
-    public static String[] ignoreTag() {
-        return IGNORE_TABLE;
     }
 }

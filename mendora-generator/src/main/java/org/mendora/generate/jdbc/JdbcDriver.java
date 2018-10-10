@@ -38,13 +38,25 @@ public class JdbcDriver {
      * 驱动资源初始化
      */
     private JdbcDriver() {
+    }
+
+    /**
+     * 链接测试
+     *
+     * @return 测试结果
+     */
+    public boolean connectTesting() {
         DbDirector dbConfig = Director.dbDirector();
         try {
             Class.forName(dbConfig.getDriverClass());
             conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUser(), dbConfig.getPassword());
+            if (conn != null && !conn.isClosed()) {
+                return true;
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }
+        return false;
     }
 
     public static JdbcDriver newDriver() {
@@ -93,17 +105,17 @@ public class JdbcDriver {
         ResultSet rs = query("show tables");
         List<String> tableNames = new ArrayList<>();
         while (rs.next()) {
-            if (rs.getString(1).startsWith(Director.tableStartWithTag())) {
-                boolean ignoreFlag = false;
-                for (String ignore : Director.ignoreTag()) {
-                    if (ignore.equals(rs.getString(1))) {
-                        ignoreFlag = true;
-                    }
-                }
-                if (!ignoreFlag) {
-                    tableNames.add(rs.getString(1));
-                }
-            }
+//            if (rs.getString(1).startsWith(Director.tableStartWithTag())) {
+//                boolean ignoreFlag = false;
+//                for (String ignore : Director.ignoreTag()) {
+//                    if (ignore.equals(rs.getString(1))) {
+//                        ignoreFlag = true;
+//                    }
+//                }
+//                if (!ignoreFlag) {
+//                    tableNames.add(rs.getString(1));
+//                }
+//            }
         }
         return tableNames;
     }

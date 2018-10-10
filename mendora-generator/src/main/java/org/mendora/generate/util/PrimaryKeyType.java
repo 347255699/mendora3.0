@@ -12,7 +12,13 @@ import java.util.Optional;
  * desc:
  */
 public enum PrimaryKeyType {
+    /**
+     * 整型
+     */
     INTEGER("Integer", TypeName.INT.box()),
+    /**
+     * 字符串
+     */
     STRING("String", ClassName.get(String.class));
     public String name;
     public TypeName typeName;

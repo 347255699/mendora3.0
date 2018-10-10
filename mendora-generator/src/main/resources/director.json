@@ -5,10 +5,10 @@
     "password": "Menfre123!@#",
     "url": "jdbc:mysql://123.207.55.60:3306/mendora?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
-  "tableStartWithTag":"access",
-  "ignoreTable":[
+  "tableStartWithTag": "access",
+  "ignoreTable": [
   ],
-  "targetPath": "D:\\idea_project\\mendora3.0\\generate",
+  "targetPath": "/Users/pundix043/workbench/mendora/generate",
   "pojo": {
     "packageName": "org.mendora.pojo",
     // noArgs, allArgs

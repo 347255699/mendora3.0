@@ -1,6 +1,5 @@
 .idea
-*/src/test
-*/target
+test
 target
 *.iml
-generate
+/generate

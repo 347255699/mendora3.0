@@ -4,6 +4,7 @@ import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.TypeSpec;
 import org.mendora.generate.jdbc.TableDesc;
+import org.mendora.generate.lombok.LombokAnnotation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,11 +32,11 @@ public interface Generator {
     /**
      * 添加lombok注解
      *
-     * @param name
-     * @param packageName
-     * @return
+     * @param name lombok注解名称
+     * @return 注解描述者
      */
-    default AnnotationSpec lombok(String name, String packageName) {
+    default AnnotationSpec lombok(String name) {
+        String packageName = LombokAnnotation.SLF4J.equals(name)?LOMBOK_EXTERN_SLF4J_PACKAGE:LOMBOK_PACKAGE;
         return AnnotationSpec.builder(ClassName.get(packageName, name))
                 .build();
     }
@@ -43,7 +44,7 @@ public interface Generator {
     /**
      * 添加注释
      *
-     * @param typeSpecBuilder
+     * @param typeSpecBuilder 类描述构建者
      */
     default void addGenerateComment(TypeSpec.Builder typeSpecBuilder) {
         typeSpecBuilder

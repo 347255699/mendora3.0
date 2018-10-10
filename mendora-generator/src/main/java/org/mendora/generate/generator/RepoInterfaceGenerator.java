@@ -3,6 +3,7 @@ package org.mendora.generate.generator;
 import com.squareup.javapoet.*;
 import lombok.extern.slf4j.Slf4j;
 import org.mendora.generate.director.Director;
+import org.mendora.generate.director.DirectorFactory;
 import org.mendora.generate.director.PojoDirector;
 import org.mendora.generate.director.RepoDirector;
 import org.mendora.generate.jdbc.TableDesc;
@@ -19,12 +20,11 @@ import java.util.List;
  */
 @Slf4j
 class RepoInterfaceGenerator implements Generator {
-    private RepoInterfaceGenerator() {
-    }
 
     private TypeSpec.Builder interfaceTypeSpecBuilder(String pojoName) {
-        RepoDirector repoDirector = Director.repoDirector();
-        PojoDirector pojoDirector = Director.pojoDirector();
+        Director director = DirectorFactory.director();
+        RepoDirector repoDirector = director.getRepoDirector();
+        PojoDirector pojoDirector = director.getPojoDirector();
         TypeSpec.Builder repoInterfaceBuilder = TypeSpec.interfaceBuilder(pojoName + "Repository")
                 .addModifiers(Modifier.PUBLIC);
         addGenerateComment(repoInterfaceBuilder);

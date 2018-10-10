@@ -1,8 +1,6 @@
 package org.mendora.generate.jdbc;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.generate.director.Director;
-import org.mendora.generate.director.DbDirector;
 import org.mendora.generate.util.BeanUtils;
 import org.mendora.generate.util.FieldMapper;
 import org.mendora.generate.util.StringUtils;
@@ -46,10 +44,10 @@ public class JdbcDriver {
      * @return 测试结果
      */
     public boolean connectTesting() {
-        DbDirector dbConfig = Director.dbDirector();
+        DbSourcesProvider.DbSources sources = JsonDbSourcesProvider.provider().provide();
         try {
-            Class.forName(dbConfig.getDriverClass());
-            conn = DriverManager.getConnection(dbConfig.getUrl(), dbConfig.getUser(), dbConfig.getPassword());
+            Class.forName(sources.getDriverClass());
+            conn = DriverManager.getConnection(sources.getUrl(), sources.getUser(), sources.getPassword());
             if (conn != null && !conn.isClosed()) {
                 return true;
             }
@@ -99,23 +97,13 @@ public class JdbcDriver {
      * 查询表名称集合
      *
      * @return 表名称集合
-     * @throws Exception
+     * @throws Exception 查询异常
      */
     public List<String> showTables() throws Exception {
-        ResultSet rs = query("show tables");
-        List<String> tableNames = new ArrayList<>();
+        final ResultSet rs = query("show tables");
+        final List<String> tableNames = new ArrayList<>();
         while (rs.next()) {
-//            if (rs.getString(1).startsWith(Director.tableStartWithTag())) {
-//                boolean ignoreFlag = false;
-//                for (String ignore : Director.ignoreTag()) {
-//                    if (ignore.equals(rs.getString(1))) {
-//                        ignoreFlag = true;
-//                    }
-//                }
-//                if (!ignoreFlag) {
-//                    tableNames.add(rs.getString(1));
-//                }
-//            }
+            tableNames.add(rs.getString(1));
         }
         return tableNames;
     }

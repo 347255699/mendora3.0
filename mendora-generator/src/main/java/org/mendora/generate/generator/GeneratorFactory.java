@@ -29,7 +29,7 @@ public class GeneratorFactory {
      * @param type 生成器类型
      * @return 生成器
      */
-    public static Generator product(Type type) {
+    public static Generator generator(Type type) {
         switch (type) {
             case POJO:
                 return PojoGenerator.newGenerator();

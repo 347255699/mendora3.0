@@ -3,7 +3,8 @@ package org.mendora.generate.generator;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;
 import lombok.extern.slf4j.Slf4j;
-import org.mendora.generate.director.Director;
+import org.mendora.generate.director.DirectorFactory;
+import org.mendora.generate.director.PojoDirector;
 import org.mendora.generate.jdbc.TableDesc;
 import org.mendora.generate.lombok.ConstructorAnnotation;
 import org.mendora.generate.lombok.LombokAnnotation;
@@ -22,11 +23,32 @@ import java.util.Optional;
  */
 @Slf4j
 class PojoGenerator implements Generator {
-    private static final String CONTENT_INTEGER = "int";
-    private static final String CONTENT_VARCHAR = "varchar";
-    private static final String CONTENT_TEXT = "text";
-    private static final String CONTENT_BIG = "big";
-    private static final String CONTENT_SHORT = "tiny";
+
+    enum SqlToJavaType {
+        INT("int", int.class),
+        VARCHAT("varchar", String.class),
+        TEXT("text", String.class),
+        BIGINT("bigint", long.class),
+        TINYINT("tinyint", short.class);
+        public String sqlType;
+        public Class<?> javaType;
+
+        SqlToJavaType(String sqlType, Class<?> javaType) {
+            this.sqlType = sqlType;
+            this.javaType = javaType;
+        }
+
+        public static Optional<SqlToJavaType> valOf(String sqlType) {
+            SqlToJavaType type = null;
+            for (SqlToJavaType _type : values()) {
+                if (sqlType.startsWith(_type.sqlType)) {
+                    type = _type;
+                    break;
+                }
+            }
+            return Optional.ofNullable(type);
+        }
+    }
 
     private PojoGenerator() {
     }
@@ -42,23 +64,26 @@ class PojoGenerator implements Generator {
      * @return 类型构建者
      */
     private TypeSpec.Builder classSpecBuilder(String pojoName) {
+        PojoDirector pojoDirector = DirectorFactory.director().getPojoDirector();
+
         // 取得表格信息, 生成pojo
         TypeSpec.Builder pojoBuilder = TypeSpec.classBuilder(pojoName)
                 .addModifiers(Modifier.PUBLIC);
-        if (Director.pojoDirector().isToStringAnnotation()) {
-            pojoBuilder.addAnnotation(lombok(LombokAnnotation.TO_STRING, LOMBOK_PACKAGE));
+        if (pojoDirector.isToStringAnnotation()) {
+            pojoBuilder.addAnnotation(lombok(LombokAnnotation.TO_STRING));
         }
-        String[] constructors = Director.pojoDirector().getConstructor();
+        String[] constructors = pojoDirector.getConstructor();
         if (constructors != null && constructors.length > 0) {
             Arrays.asList(constructors).forEach(constructor ->
-                    ConstructorAnnotation.valOf(constructor).ifPresent(ca -> pojoBuilder.addAnnotation(lombok(ca.name, LOMBOK_PACKAGE))));
+                    ConstructorAnnotation.valOf(constructor).ifPresent(ca -> pojoBuilder.addAnnotation(lombok(ca.name)))
+            );
 
         }
-        if (Director.pojoDirector().isDataAnnotation()) {
-            pojoBuilder.addAnnotation(lombok(LombokAnnotation.DATA, LOMBOK_PACKAGE));
+        if (pojoDirector.isDataAnnotation()) {
+            pojoBuilder.addAnnotation(lombok(LombokAnnotation.DATA));
         }
-        if (Director.pojoDirector().isBuilderAnnotation()) {
-            pojoBuilder.addAnnotation(lombok(LombokAnnotation.BUILDER, LOMBOK_PACKAGE));
+        if (pojoDirector.isBuilderAnnotation()) {
+            pojoBuilder.addAnnotation(lombok(LombokAnnotation.BUILDER));
         }
         return pojoBuilder;
     }
@@ -81,29 +106,6 @@ class PojoGenerator implements Generator {
     }
 
     /**
-     * 映射类型
-     *
-     * @param type java类型名称
-     * @return java类型
-     */
-    private Optional<Class<?>> parseType(String type) {
-        Class<?> clazz = null;
-        if (type.contains(CONTENT_INTEGER)) {
-            if (type.startsWith(CONTENT_BIG)) {
-                clazz = long.class;
-            } else if (type.startsWith(CONTENT_SHORT)) {
-                clazz = short.class;
-            } else {
-                clazz = int.class;
-            }
-        }
-        if (type.contains(CONTENT_VARCHAR) || CONTENT_TEXT.equals(type)) {
-            clazz = String.class;
-        }
-        return Optional.ofNullable(clazz);
-    }
-
-    /**
      * 生成
      *
      * @param pojoName pojo名称
@@ -114,12 +116,13 @@ class PojoGenerator implements Generator {
         TypeSpec.Builder pojoBuilder = classSpecBuilder(pojoName);
         addGenerateComment(pojoBuilder);
         tds.forEach(td ->
-                parseType(td.getType()).ifPresent(type -> {
+                SqlToJavaType.valOf(td.getType()).ifPresent(type -> {
                     // 字段名称
                     String pojoField = StringUtils.lineToHump(td.getField());
-                    FieldSpec.Builder fieldBuilder = fieldSpecBuilder(type, pojoField, td.getComment());
+                    FieldSpec.Builder fieldBuilder = fieldSpecBuilder(type.javaType, pojoField, td.getComment());
                     pojoBuilder.addField(fieldBuilder.build());
-                }));
+                })
+        );
         return pojoBuilder.build();
     }
 }

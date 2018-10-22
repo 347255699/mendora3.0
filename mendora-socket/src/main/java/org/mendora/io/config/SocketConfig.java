@@ -1,4 +1,4 @@
-package org.mendora.io.Config;
+package org.mendora.io.config;
 
 /**
  * @author menfre

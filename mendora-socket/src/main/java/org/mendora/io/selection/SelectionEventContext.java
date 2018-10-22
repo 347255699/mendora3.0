@@ -3,7 +3,7 @@ package org.mendora.io.selection;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.mendora.io.Config.SocketConfig;
+import org.mendora.io.config.SocketConfig;
 
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;

@@ -9,6 +9,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <dependencies>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.30.Final</version>
+        </dependency>
+    </dependencies>
+
     <artifactId>mendora-course</artifactId>
     <build>
         <plugins>
@@ -22,6 +31,5 @@
             </plugin>
         </plugins>
     </build>
-
 
 </project>

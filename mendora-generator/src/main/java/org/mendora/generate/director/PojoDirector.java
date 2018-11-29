@@ -15,4 +15,5 @@ public class PojoDirector {
     private boolean dataAnnotation = false;
     private String[] constructor;
     private boolean toStringAnnotation = false;
+    private boolean apiModelProperty = false;
 }

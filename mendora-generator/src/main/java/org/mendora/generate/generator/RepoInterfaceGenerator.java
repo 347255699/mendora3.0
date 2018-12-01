@@ -31,8 +31,8 @@ class RepoInterfaceGenerator implements Generator {
         PrimaryKeyType.valOf(repoDirector.getPrimaryKeyType()).ifPresent(pkt -> {
             ParameterizedTypeName repoInterface = ParameterizedTypeName.get(
                     ClassName.get(repoDirector.getSuperRepoPackage(), repoDirector.getInterfaceDirector().getSuperInterface()),
-                    pkt.typeName,
-                    ClassName.get(pojoDirector.getPackageName(), pojoName)
+                    ClassName.get(pojoDirector.getPackageName(), pojoName),
+                    pkt.typeName
             );
             repoInterfaceBuilder.addSuperinterface(repoInterface);
         });

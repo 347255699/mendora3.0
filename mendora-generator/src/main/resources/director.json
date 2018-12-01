@@ -1,35 +1,36 @@
 {
   "dbSources": {
     "driverClass": "com.mysql.cj.jdbc.Driver",
-    "user": "menfre",
-    "password": "Menfre123!@#",
-    "url": "jdbc:mysql://123.207.55.60:3306/mendora?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
+    "user": "root",
+    "password": "wokoworks002",
+    "url": "jdbc:mysql://localhost:3306/pundix_service_redpack?cachePrepStmts=true&useUnicode=true&characterEncoding=utf8"
   },
   "tablePrefixs": [
-    "access"
+    "config",
+    "redpack",
+    "coupon"
   ],
-  "targetPath": "H:\\workbench\\mendora\\mendora3.0\\generate",
+  "targetPath": "/Users/pundix043/IdeaProjects/pundix-service-redpack/pundix-service-redpack-server/src/main/java",
   "pojoDirector": {
-    "packageName": "org.mendora.pojo",
+    "packageName": "com.wokoworks.vo",
     // noArgs, allArgs
     "constructor": [
-      "noArgs"
     ],
     "dataAnnotation": true,
     "builderAnnotation": true,
-    "toStringAnnotation": false
+    "toStringAnnotation": false,
+    "apiModelProperty": false
   },
   "repoDirector": {
-    "packageName": "org.mendora.repository",
-    // Integer, String
+    "packageName": "com.wokoworks.repository",
     "primaryKeyType": "Integer",
-    "superRepoPackage": "org.mendora.jdbc.repository",
+    "superRepoPackage": "com.wokoworks.framework.data",
     "interfaceDirector": {
       "superInterface": "BaseRepository"
     },
     "implementDirector": {
       "superClass": "BaseRepositoryImpl",
-      "slf4jAnnotation": true
+      "slf4jAnnotation": false
     }
   }
 }

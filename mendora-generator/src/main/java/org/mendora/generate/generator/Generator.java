@@ -19,6 +19,7 @@ import java.util.List;
 public interface Generator {
     String LOMBOK_PACKAGE = "lombok";
     String LOMBOK_EXTERN_SLF4J_PACKAGE = "lombok.extern.slf4j";
+    String SWAGGER_PACKAGE = "io.swagger.annotations";
 
     /**
      * 生成
@@ -36,8 +37,33 @@ public interface Generator {
      * @return 注解描述者
      */
     default AnnotationSpec lombok(String name) {
-        String packageName = LombokAnnotation.SLF4J.equals(name)?LOMBOK_EXTERN_SLF4J_PACKAGE:LOMBOK_PACKAGE;
+        String packageName = LombokAnnotation.SLF4J.equals(name) ? LOMBOK_EXTERN_SLF4J_PACKAGE : LOMBOK_PACKAGE;
         return AnnotationSpec.builder(ClassName.get(packageName, name))
+                .build();
+    }
+
+    /**
+     * 添加swagger注解
+     *
+     * @param name swagger注解名称
+     * @return 注解描述者
+     */
+    default AnnotationSpec swagger(String name) {
+        return AnnotationSpec.builder(ClassName.get(SWAGGER_PACKAGE, name))
+                .addMember("value", "")
+                .build();
+    }
+
+    /**
+     * 添加swagger注解
+     *
+     * @param name    swagger注解名称
+     * @param comment swagger注释
+     * @return 注解描述者
+     */
+    default AnnotationSpec swagger(String name, String comment) {
+        return AnnotationSpec.builder(ClassName.get(SWAGGER_PACKAGE, name))
+                .addMember("value", comment)
                 .build();
     }
 

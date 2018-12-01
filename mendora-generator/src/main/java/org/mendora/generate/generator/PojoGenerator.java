@@ -8,9 +8,11 @@ import org.mendora.generate.director.PojoDirector;
 import org.mendora.generate.jdbc.TableDesc;
 import org.mendora.generate.lombok.ConstructorAnnotation;
 import org.mendora.generate.lombok.LombokAnnotation;
+import org.mendora.generate.swagger.SwaggerAnnotation;
 import org.mendora.generate.util.StringUtils;
 
 import javax.lang.model.element.Modifier;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -24,12 +26,34 @@ import java.util.Optional;
 @Slf4j
 class PojoGenerator implements Generator {
 
+    private PojoDirector pojoDirector;
+
     enum SqlToJavaType {
+        /**
+         * 整型数值
+         */
         INT("int", int.class),
+        /**
+         * 可变长字符串
+         */
         VARCHAT("varchar", String.class),
+        /**
+         * 文本类型
+         */
         TEXT("text", String.class),
+        /**
+         * 长整型
+         */
         BIGINT("bigint", long.class),
-        TINYINT("tinyint", short.class);
+        /**
+         * 短整型
+         */
+        TINYINT("tinyint", int.class),
+
+        /**
+         * 大浮点数
+         */
+        DECIMAL("decimal", BigDecimal.class);
         public String sqlType;
         public Class<?> javaType;
 
@@ -64,7 +88,7 @@ class PojoGenerator implements Generator {
      * @return 类型构建者
      */
     private TypeSpec.Builder classSpecBuilder(String pojoName) {
-        PojoDirector pojoDirector = DirectorFactory.director().getPojoDirector();
+        pojoDirector = DirectorFactory.director().getPojoDirector();
 
         // 取得表格信息, 生成pojo
         TypeSpec.Builder pojoBuilder = TypeSpec.classBuilder(pojoName)
@@ -100,7 +124,11 @@ class PojoGenerator implements Generator {
         FieldSpec.Builder fieldBuilder = FieldSpec.builder(type, pojoField)
                 .addModifiers(Modifier.PRIVATE);
         if (comment != null && comment.length() > 0) {
-            fieldBuilder.addJavadoc(comment);
+            if (pojoDirector.isApiModelProperty()) {
+                fieldBuilder.addAnnotation(swagger(SwaggerAnnotation.API_MODEL_PROPERTY, "\"" + comment + "\""));
+            } else {
+                fieldBuilder.addJavadoc(comment);
+            }
         }
         return fieldBuilder;
     }

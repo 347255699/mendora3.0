@@ -1,10 +1,27 @@
 package org.mendora.jdbc;
 
-public abstract class BaseRepository<K, T> {
+/**
+ * 持久化基础接口
+ *
+ * @param <K> 主键类型
+ * @param <T> 相关实体类型
+ * @author menfre
+ */
+public interface BaseRepository<K, T> {
 
-    protected abstract String table();
+    /**
+     * 提供相关联的表名称
+     *
+     * @return 关联表名称
+     */
+    String tableName();
 
-    public SelectBuilder select() {
-        return new SelectBuilder(table());
+    /**
+     * 提供select语句构造器
+     *
+     * @return select构造器
+     */
+    default SelectBuilder select() {
+        return new SelectBuilder(tableName());
     }
 }

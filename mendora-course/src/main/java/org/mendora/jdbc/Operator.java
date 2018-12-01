@@ -1,4 +1,4 @@
-package org.mendora.course.jdbc;
+package org.mendora.jdbc;
 
 import java.util.Optional;
 

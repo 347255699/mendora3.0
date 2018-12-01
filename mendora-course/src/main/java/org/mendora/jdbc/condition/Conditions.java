@@ -1,7 +1,11 @@
 package org.mendora.jdbc.condition;
 
+import org.mendora.jdbc.Operator;
+
 /**
  * 条件构造工具
+ *
+ * @author menfre
  */
 public class Conditions {
     /**
@@ -15,7 +19,7 @@ public class Conditions {
         return Condition.builder()
                 .field(field)
                 .val(val)
-                .symbol(Condition.Symbol.GREATER)
+                .operator(Operator.GREATER)
                 .build();
     }
 }

@@ -13,6 +13,7 @@
         <module>mendora-generator</module>
         <module>mendora-jdbc</module>
         <module>mendora-course</module>
+        <module>mendora-util</module>
     </modules>
     <properties>
         <slf4j.version>1.7.25</slf4j.version>
@@ -58,7 +59,7 @@
 
         <dependency>
             <groupId>org.mendora</groupId>
-            <artifactId>mendora-jdbc</artifactId>
+            <artifactId>mendora-util</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

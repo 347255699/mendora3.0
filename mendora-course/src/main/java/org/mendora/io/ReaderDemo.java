@@ -45,7 +45,9 @@ public class ReaderDemo {
                 e.printStackTrace();
             }
         }
-        write(file);
+        if (exists) {
+            write(file);
+        }
     }
 
     public void write(File file) {
